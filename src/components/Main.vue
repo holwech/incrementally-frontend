@@ -121,8 +121,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { BoardState, IStrokeProps } from '../draw/utils/boardInterfaces';
-import { Controller } from '../draw/InterfaceController';
+import { Controller } from 'draw-ts';
+import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
+// import { BoardState, IStrokeProps } from 'draw-ts';
+// import { Controller } from '../draw/InterfaceController';
 
 @Component
 export default class Main extends Vue {
