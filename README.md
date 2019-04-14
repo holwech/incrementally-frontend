@@ -2,33 +2,10 @@
 
 # draw
 
-## Autocompile Typescript
-In VSCode click `CTRL+SHIFT+b` and select `tsc:watch - tsconfig.json`. This compiles everything except for the frontend. To compile this, open a terminal view, navigate to the frontend folder and run `npm run serve`.
+View a running example [here](https://priceless-hodgkin-3234a5.netlify.com/)
 
-## Project setup
-```
-npm install
-```
+### Developing
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+This example uses the `draw-ts` package. For developing the `draw-ts` package locally, a library called `npm-link-copy` is used to automatically update the package.
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Run `npm install -g laggingreflex/npm-link-copy` to install, got to the project folder (`some/path/to/draw-frontend`) and run `npm-link-copy ../some/path/to/draw -w`.

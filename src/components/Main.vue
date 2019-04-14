@@ -25,19 +25,23 @@
           </v-list-tile>
         </v-list>
         </v-navigation-drawer>
-        <v-toolbar color="indigo" dark fixed app>
+        <v-toolbar color="dark-grey" dark fixed app>
           <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
           <v-toolbar-title>Application</v-toolbar-title>
-            {{ timeObj.minutes + ":" + timeObj.seconds }}
+            {{ state.state }}
+            {{ state.playState.state }}
+            <v-btn flat>{{
+              state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
+              state.timer.timeMonitor.lengthMinutes + ':' + state.timer.timeMonitor.lengthSeconds }}</v-btn>
             <v-spacer></v-spacer>
             <v-btn flat small>Pan {{ this.panMode }} (Hold CTRL)</v-btn>
-            <v-btn small @click="clear">Clear</v-btn>
-            <v-btn color="success" @click="controller.startRecording()">Start recording</v-btn>
-            <v-btn @click="controller.stopRecording()">Stop recording</v-btn>
-            <!-- <v-btn @click="controller.printLog()"> Print log </v-btn> -->
-            <v-btn color="success" @click="controller.startPlayer()"> Play </v-btn>
-            <v-btn color="success" @click="controller.reversePlayer()"> Reverse </v-btn>
-            <v-btn @click="controller.pausePlayer()"> Pause </v-btn>
+            <v-btn color="white" @click="controller.restart()"><v-icon color="black">replay</v-icon></v-btn>
+            <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
+            <v-btn color="white" v-if="isPlaying" @click="controller.pause()"><v-icon color="black">pause</v-icon></v-btn>
+            <v-btn color="white" v-else @click="controller.start()"><v-icon color="black">play_arrow</v-icon></v-btn>
+            <v-btn color="white" v-if="isRecording" @click="controller.recordOff()"><v-icon color="red">fiber_manual_record</v-icon></v-btn>
+            <v-btn color="white" v-else @click="controller.recordOn()"><v-icon color="grey">fiber_manual_record</v-icon></v-btn>
+            <v-btn small flat @click="clear">Clear</v-btn>
             <v-toolbar-items class="hidden-sm-and-down">
               <v-select
                 item-text="text"
@@ -76,7 +80,7 @@
             </v-toolbar-items>
           </v-toolbar>
         <v-content ma-0 pa-0 style="padding: 0px">
-            <v-container
+            <!-- <v-container
               fluid
               grid-list-lg
             >
@@ -90,7 +94,7 @@
                   ></v-slider>
                 </v-flex>
               </v-layout>
-            </v-container>
+            </v-container> -->
           <v-container fluid fill-height ma-0 pa-0>
             <v-layout
             justify-center
@@ -112,9 +116,9 @@
           </v-layout>
         </v-container>
       </v-content>
-      <v-footer color="indigo" app inset>
+      <!-- <v-footer color="indigo" app inset>
         <span class="white--text">&copy; 2017</span>
-      </v-footer>
+      </v-footer> -->
     </v-app>
   </div>
 </template>
@@ -122,22 +126,26 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Controller } from 'draw-ts';
+import AppState from 'draw-ts/lib/AppState';
 import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
-// import { BoardState, IStrokeProps } from 'draw-ts';
-// import { Controller } from '../draw/InterfaceController';
+import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
+import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
 
 @Component
 export default class Main extends Vue {
+  private state = new AppState();
   private drawer = false;
   private controller!: Controller;
   private dialog = false;
+  private recordColor = 'grey';
+  private recording = false;
+  private playing = false;
   private msg: string = 'Drawing board';
   private smoothness = { text: '4 - Sharp curves', value: 4};
   private slider = 0;
   private color = { text: 'Black', value: 'black'};
   private width = { text: '1px', value: 1};
   private panMode: string = 'off';
-  private timeObj = { minutes: 0, seconds: 0};
   private selectSmoothnessItems = [
     { text: '1 - No smoothing', value: 1 },
     { text: '4 - Sharp curves', value: 4 },
@@ -171,12 +179,15 @@ export default class Main extends Vue {
   }
 
   private mounted(): void {
-    this.controller = new Controller('svgElement', {
-      color: this.color.value,
-      width: this.width.value,
-      bufferSize: this.smoothness.value,
-    });
-    this.controller.app.state.timer.bindTimeMonitor(this.timeObj);
+    this.controller = new Controller(
+      'svgElement',
+      this.state,
+      {
+        color: this.color.value,
+        width: this.width.value,
+        bufferSize: this.smoothness.value,
+      },
+    );
     window.addEventListener('keydown', this.panOn);
     window.addEventListener('keyup', this.panOff);
   }
@@ -192,6 +203,21 @@ export default class Main extends Vue {
       width: this.width.value,
       bufferSize: this.smoothness.value,
     });
+  }
+
+  get isPlaying(): boolean {
+    return this.state.playState.state === PlayStates.PLAY;
+    // if (this.state.state === AppStates.PLAYING) {
+    //   this.playing = false;
+    //   this.controller.pause();
+    // } else {
+    //   this.playing = true;
+    //   this.controller.start();
+    // }
+  }
+
+  get isRecording(): boolean {
+    return this.state.state === AppStates.RECORDING;
   }
 }
 </script>
