@@ -28,19 +28,18 @@
         <v-toolbar color="dark-grey" dark fixed app>
           <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
           <v-toolbar-title>Incrementally</v-toolbar-title>
+            <v-spacer></v-spacer>
             <v-btn flat>{{
               state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
               state.timer.timeMonitor.lengthMinutes + ':' + state.timer.timeMonitor.lengthSeconds }}</v-btn>
-            <v-btn flat small>Click record to draw | Hold CTRL to zoom/pan</v-btn>
-            <v-spacer></v-spacer>
+            <v-btn flat small>Record to draw | CTRL to zoom/pan</v-btn>
             <v-btn color="white" @click="controller.restart()"><v-icon color="black">replay</v-icon></v-btn>
             <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
             <v-btn color="white" v-if="isPlaying" @click="controller.pause()"><v-icon color="black">pause</v-icon></v-btn>
             <v-btn color="white" v-else @click="controller.start()"><v-icon color="black">play_arrow</v-icon></v-btn>
             <v-btn color="white" v-if="isRecording" @click="controller.recordOff()"><v-icon color="red">fiber_manual_record</v-icon></v-btn>
             <v-btn color="white" v-else @click="controller.recordOn()"><v-icon color="grey">fiber_manual_record</v-icon></v-btn>
-            <v-btn small flat @click="clear">Clear</v-btn>
-            <v-toolbar-items class="hidden-sm-and-down">
+            <!-- <v-toolbar-items class="hidden-sm-and-down">
               <v-select
                 item-text="text"
                 item-value="value"
@@ -51,7 +50,7 @@
                 return-object
                 color='black'
               ></v-select>
-            </v-toolbar-items>
+            </v-toolbar-items> -->
             <v-toolbar-items class="hidden-sm-and-down">
               <v-select
                 item-text="text"
@@ -71,7 +70,7 @@
                 :items="selectWidthItems"
                 @input="setStrokeProperties"
                 v-model="width"
-                label="Color"
+                label="Width"
                 return-object
                 color='black'
               ></v-select>
