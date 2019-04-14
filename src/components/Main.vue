@@ -28,6 +28,7 @@
         <v-toolbar color="dark-grey" dark fixed app>
           <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
           <v-toolbar-title>Incrementally</v-toolbar-title>
+            {{ state.state + '-' + state.subState }}
             <v-spacer></v-spacer>
             <v-btn flat>{{
               state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
@@ -125,7 +126,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Controller } from 'draw-ts';
 import AppState from 'draw-ts/lib/AppState';
 import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
-import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
+import { AppStates, AppSubState } from 'draw-ts/lib/utils/appInterfaces';
 import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
 
 @Component
@@ -203,7 +204,7 @@ export default class Main extends Vue {
   }
 
   get isPlaying(): boolean {
-    return this.state.playState.state === PlayStates.PLAY;
+    return this.state.subState === AppSubState.START;
     // if (this.state.state === AppStates.PLAYING) {
     //   this.playing = false;
     //   this.controller.pause();
