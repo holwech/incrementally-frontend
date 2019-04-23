@@ -27,19 +27,19 @@
         </v-navigation-drawer> -->
         <v-toolbar color="dark-grey" dark fixed app>
           <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
-          <v-toolbar-title>Incrementally</v-toolbar-title>
-            <!-- {{ state.state + '-' + state.subState }} -->
+          <v-toolbar-title>Incrementally<sup><span style="color:yellow">beta</span></sup></v-toolbar-title>
+            <!-- {{ state.state }} -->
             <v-spacer></v-spacer>
             <v-btn flat>{{
               state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
               state.timer.timeMonitor.lengthMinutes + ':' + state.timer.timeMonitor.lengthSeconds }}</v-btn>
-            <v-btn flat small>Record to draw | CTRL to zoom/pan</v-btn>
+            <v-btn flat small>Hold CTRL to zoom/pan</v-btn>
             <v-btn color="white" @click="controller.restart()"><v-icon color="black">replay</v-icon></v-btn>
             <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
             <v-btn color="white" v-if="isPlaying" @click="controller.pause()"><v-icon color="black">pause</v-icon></v-btn>
             <v-btn color="white" v-else @click="controller.start()"><v-icon color="black">play_arrow</v-icon></v-btn>
-            <v-btn color="white" v-if="isRecording" @click="controller.recordOff()"><v-icon color="red">fiber_manual_record</v-icon></v-btn>
-            <v-btn color="white" v-else @click="controller.recordOn()"><v-icon color="grey">fiber_manual_record</v-icon></v-btn>
+            <!-- <v-btn color="white" v-if="isRecording" @click="controller.recordOff()"><v-icon color="red">fiber_manual_record</v-icon></v-btn> -->
+            <!-- <v-btn color="white" v-else @click="controller.recordOn()"><v-icon color="grey">fiber_manual_record</v-icon></v-btn> -->
             <!-- <v-toolbar-items class="hidden-sm-and-down">
               <v-select
                 item-text="text"
@@ -52,30 +52,43 @@
                 color='black'
               ></v-select>
             </v-toolbar-items> -->
-            <v-toolbar-items class="hidden-sm-and-down">
-              <v-select
-                item-text="text"
-                item-value="value"
-                :items="selectColorItems"
-                @input="setStrokeProperties"
-                v-model="color"
-                label="Color"
-                return-object
-                color='black'
-              ></v-select>
-            </v-toolbar-items>
-            <v-toolbar-items class="hidden-sm-and-down">
-              <v-select
-                item-text="text"
-                item-value="value"
-                :items="selectWidthItems"
-                @input="setStrokeProperties"
-                v-model="width"
-                label="Width"
-                return-object
-                color='black'
-              ></v-select>
-            </v-toolbar-items>
+            <SettingsDialog>
+                <v-select
+                  item-text="text"
+                  item-value="value"
+                  :items="selectColorItems"
+                  @input="setStrokeProperties"
+                  v-model="color"
+                  label="Color"
+                  return-object
+                  color='black'
+                ></v-select>
+                <v-select
+                  item-text="text"
+                  item-value="value"
+                  :items="selectWidthItems"
+                  @input="setStrokeProperties"
+                  v-model="width"
+                  label="Width"
+                  return-object
+                  color="black"
+                ></v-select>
+                <v-select
+                  item-text="text"
+                  item-value="value"
+                  :items="selectColorItems"
+                  @input="setStrokeProperties"
+                  v-model="fillColor"
+                  label="Fill color"
+                  return-object
+                  color="black"
+                ></v-select>
+                <v-checkbox
+                  v-model="fill"
+                  @change="setStrokeProperties"
+                  label="Fill"
+                ></v-checkbox>
+            </SettingsDialog>
           </v-toolbar>
         <v-content ma-0 pa-0 style="padding: 0px">
             <!-- <v-container
@@ -123,13 +136,18 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import SettingsDialog from '@/components/SettingsDialog.vue';
 import { Controller } from 'draw-ts';
 import AppState from 'draw-ts/lib/AppState';
 import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
-import { AppStates, AppSubState } from 'draw-ts/lib/utils/appInterfaces';
+import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
 import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
 
-@Component
+@Component({
+  components: {
+    SettingsDialog,
+  },
+})
 export default class Main extends Vue {
   private state = new AppState();
   private drawer = false;
@@ -143,6 +161,7 @@ export default class Main extends Vue {
   private slider = 0;
   private color = { text: 'Black', value: 'black'};
   private width = { text: '1px', value: 1};
+  private fillColor = { text: 'Black', value: 'black'};
   private panMode: string = 'off';
   private selectSmoothnessItems = [
     { text: '1 - No smoothing', value: 1 },
@@ -161,6 +180,7 @@ export default class Main extends Vue {
     { text: '4px', value: 4 },
     { text: '8px', value: 8 },
   ];
+  private fill = false;
 
   private panOn(e: KeyboardEvent): void {
     if (e.keyCode === 17) {
@@ -184,6 +204,7 @@ export default class Main extends Vue {
         color: this.color.value,
         width: this.width.value,
         bufferSize: this.smoothness.value,
+        fill: undefined,
       },
     );
     window.addEventListener('keydown', this.panOn);
@@ -195,16 +216,17 @@ export default class Main extends Vue {
   }
 
   private setStrokeProperties(): void {
-    console.log(this.smoothness.value, this.color.value, this.width.value);
+    console.log(this.fill ? this.fillColor.value : undefined)
     this.controller.setStrokeProperties({
       color: this.color.value,
       width: this.width.value,
       bufferSize: this.smoothness.value,
+      fill: this.fill ? this.fillColor.value : undefined,
     });
   }
 
   get isPlaying(): boolean {
-    return this.state.subState === AppSubState.START;
+    return this.state.state === AppStates.START;
     // if (this.state.state === AppStates.PLAYING) {
     //   this.playing = false;
     //   this.controller.pause();
@@ -212,10 +234,6 @@ export default class Main extends Vue {
     //   this.playing = true;
     //   this.controller.start();
     // }
-  }
-
-  get isRecording(): boolean {
-    return this.state.state === AppStates.RECORDING;
   }
 }
 </script>
