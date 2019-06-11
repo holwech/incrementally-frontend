@@ -33,13 +33,24 @@
             <v-btn flat>{{
               state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
               state.timer.timeMonitor.lengthMinutes + ':' + state.timer.timeMonitor.lengthSeconds }}</v-btn>
-            <v-btn flat small>Hold CTRL to zoom/pan</v-btn>
+            <HelpDialog>
+              <v-flex>
+                <v-list>
+                  <v-list-tile v-for="text in helpText" :key="text">
+                    <v-list-tile-action>
+                      <v-icon>star</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-content >
+                      <v-list-tile-title v-text="text"></v-list-tile-title>
+                    </v-list-tile-content>
+                  </v-list-tile>
+                </v-list>
+              </v-flex>
+            </HelpDialog>
             <v-btn color="white" @click="controller.restart()"><v-icon color="black">replay</v-icon></v-btn>
             <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
             <v-btn color="white" v-if="isPlaying" @click="controller.pause()"><v-icon color="black">pause</v-icon></v-btn>
             <v-btn color="white" v-else @click="controller.start()"><v-icon color="black">play_arrow</v-icon></v-btn>
-            <!-- <v-btn color="white" v-if="isRecording" @click="controller.recordOff()"><v-icon color="red">fiber_manual_record</v-icon></v-btn> -->
-            <!-- <v-btn color="white" v-else @click="controller.recordOn()"><v-icon color="grey">fiber_manual_record</v-icon></v-btn> -->
             <!-- <v-toolbar-items class="hidden-sm-and-down">
               <v-select
                 item-text="text"
@@ -57,7 +68,7 @@
                   item-text="text"
                   item-value="value"
                   :items="selectColorItems"
-                  @input="setStrokeProperties"
+                  @input="setStrokeProperties('stroke')"
                   v-model="color"
                   label="Color"
                   return-object
@@ -67,7 +78,7 @@
                   item-text="text"
                   item-value="value"
                   :items="selectWidthItems"
-                  @input="setStrokeProperties"
+                  @input="setStrokeProperties('stroke-width')"
                   v-model="width"
                   label="Width"
                   return-object
@@ -77,7 +88,7 @@
                   item-text="text"
                   item-value="value"
                   :items="selectColorItems"
-                  @input="setStrokeProperties"
+                  @input="setStrokeProperties('fill')"
                   v-model="fillColor"
                   label="Fill color"
                   return-object
@@ -85,27 +96,12 @@
                 ></v-select>
                 <v-checkbox
                   v-model="fill"
-                  @change="setStrokeProperties"
+                  @change="setStrokeProperties('fill')"
                   label="Fill"
                 ></v-checkbox>
             </SettingsDialog>
           </v-toolbar>
         <v-content ma-0 pa-0 style="padding: 0px">
-            <!-- <v-container
-              fluid
-              grid-list-lg
-            >
-              <v-layout
-                row
-                wrap
-              >
-                <v-flex xs12>
-                  <v-slider
-                    v-model="slider"
-                  ></v-slider>
-                </v-flex>
-              </v-layout>
-            </v-container> -->
           <v-container fluid fill-height ma-0 pa-0>
             <v-layout
             justify-center
@@ -117,7 +113,7 @@
                   xmlns="http://www.w3.org/2000/svg"
                   xmlns:xlink="http://www.w3.org/1999/xlink"
                   version="1.1"
-                  id="svgElement"
+                  id="svg"
                   viewBox="0 0 1200 800"
                   enable-background="new 0 0 1200 800"
                   xml:space="preserve"
@@ -127,9 +123,6 @@
           </v-layout>
         </v-container>
       </v-content>
-      <!-- <v-footer color="indigo" app inset>
-        <span class="white--text">&copy; 2017</span>
-      </v-footer> -->
     </v-app>
   </div>
 </template>
@@ -137,15 +130,18 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SettingsDialog from '@/components/SettingsDialog.vue';
+import HelpDialog from '@/components/HelpDialog.vue';
 import { Controller } from 'draw-ts';
 import AppState from 'draw-ts/lib/AppState';
 import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
 import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
 import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
+import { StrokeAttributes } from 'draw-ts/lib/event/eventInterfaces';
 
 @Component({
   components: {
     SettingsDialog,
+    HelpDialog,
   },
 })
 export default class Main extends Vue {
@@ -181,47 +177,79 @@ export default class Main extends Vue {
     { text: '8px', value: 8 },
   ];
   private fill = false;
+  private helpText = [
+    'Click play/space to start recording',
+    'Click reverse and then play to view recording',
+    'Hold CTRL and click left mouse button to pan',
+    'Scroll to zoom',
+    'Click on drawing to remove it',
+  ];
+
+  private playToggle(e: KeyboardEvent): void {
+    if (e.keyCode === 32 || e.key === ' ') {
+      if (this.isPlaying) {
+        this.controller.pause();
+      } else {
+        this.controller.start();
+      }
+    }
+  }
 
   private panOn(e: KeyboardEvent): void {
     if (e.keyCode === 17) {
       this.panMode = 'on';
-      this.controller.setState(BoardState.PAN);
+      this.controller.stateToggle(true);
     }
   }
 
   private panOff(e: KeyboardEvent): void {
     if (e.keyCode === 17) {
       this.panMode = 'off';
-      this.controller.setState(BoardState.DRAW);
+      this.controller.stateToggle(false);
     }
   }
 
   private mounted(): void {
     this.controller = new Controller(
-      'svgElement',
+      'svg',
       this.state,
-      {
-        color: this.color.value,
-        width: this.width.value,
-        bufferSize: this.smoothness.value,
-        fill: undefined,
-      },
+      [
+        { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
+        { targetAttr: StrokeAttributes.WIDTH, value: this.width.value },
+        { targetAttr: StrokeAttributes.BUFFER_SIZE, value: this.smoothness.value },
+        { targetAttr: StrokeAttributes.FILL, value: undefined },
+      ],
     );
     window.addEventListener('keydown', this.panOn);
     window.addEventListener('keyup', this.panOff);
+    window.addEventListener('keydown', this.playToggle);
   }
 
   private clear(): void {
     this.controller.clear();
   }
 
-  private setStrokeProperties(): void {
-    console.log(this.fill ? this.fillColor.value : undefined)
+  private setStrokeProperties(attr: StrokeAttributes): void {
+    let value;
+    switch (attr) {
+      case StrokeAttributes.COLOR:
+        value = this.color.value;
+        break;
+      case StrokeAttributes.WIDTH:
+        value = this.width.value;
+        break;
+      case StrokeAttributes.BUFFER_SIZE:
+        value = this.smoothness.value;
+        break;
+      case StrokeAttributes.FILL:
+        value = this.fill ? this.fillColor.value : undefined;
+        break;
+      default:
+        break;
+    }
     this.controller.setStrokeProperties({
-      color: this.color.value,
-      width: this.width.value,
-      bufferSize: this.smoothness.value,
-      fill: this.fill ? this.fillColor.value : undefined,
+      targetAttr: attr,
+      value,
     });
   }
 
@@ -254,7 +282,7 @@ a {
   color: #42b983;
 }
 
-#svgElement {
+#svg {
   border: 1px solid black;
 }
 
