@@ -25,90 +25,88 @@
           </v-list-tile>
         </v-list>
         </v-navigation-drawer> -->
-        <v-toolbar color="dark-grey" dark fixed app>
-          <!-- <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon> -->
-          <v-toolbar-title>Incrementally<sup><span style="color:yellow">beta</span></sup></v-toolbar-title>
-            <!-- {{ state.state }} -->
-            <v-spacer></v-spacer>
-            <v-btn flat>{{
-              state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
-              state.timer.timeMonitor.lengthMinutes + ':' + state.timer.timeMonitor.lengthSeconds }}</v-btn>
-            <HelpDialog>
-              <v-flex>
-                <v-list>
-                  <v-list-tile v-for="text in helpText" :key="text">
-                    <v-list-tile-action>
-                      <v-icon>star</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-content >
-                      <v-list-tile-title v-text="text"></v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                </v-list>
-              </v-flex>
-            </HelpDialog>
-            <v-btn color="white" @click="controller.restart()"><v-icon color="black">replay</v-icon></v-btn>
-            <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
-            <v-btn color="white" v-if="isPlaying" @click="controller.pause()"><v-icon color="black">pause</v-icon></v-btn>
-            <v-btn color="white" v-else @click="controller.start()"><v-icon color="black">play_arrow</v-icon></v-btn>
-            <!-- <v-toolbar-items class="hidden-sm-and-down">
-              <v-select
-                item-text="text"
-                item-value="value"
-                :items="selectSmoothnessItems"
-                @input="setStrokeProperties"
-                v-model="smoothness"
-                label="Smoothness"
-                return-object
-                color='black'
-              ></v-select>
-            </v-toolbar-items> -->
-            <SettingsDialog>
-                <v-select
-                  item-text="text"
-                  item-value="value"
-                  :items="selectColorItems"
-                  @input="setStrokeProperties('stroke')"
-                  v-model="color"
-                  label="Color"
-                  return-object
-                  color='black'
-                ></v-select>
-                <v-select
-                  item-text="text"
-                  item-value="value"
-                  :items="selectWidthItems"
-                  @input="setStrokeProperties('stroke-width')"
-                  v-model="width"
-                  label="Width"
-                  return-object
-                  color="black"
-                ></v-select>
-                <v-select
-                  item-text="text"
-                  item-value="value"
-                  :items="selectColorItems"
-                  @input="setStrokeProperties('fill')"
-                  v-model="fillColor"
-                  label="Fill color"
-                  return-object
-                  color="black"
-                ></v-select>
-                <v-checkbox
-                  v-model="fill"
-                  @change="setStrokeProperties('fill')"
-                  label="Fill"
-                ></v-checkbox>
-            </SettingsDialog>
-            <LoginButton />
-          </v-toolbar>
-        <v-content ma-0 pa-0 style="padding: 0px">
-          <v-container fluid fill-height ma-0 pa-0>
-            <v-layout
-            justify-center
-            align-center
-            row wrap
-            >
+      <Toolbar>
+        <v-btn @click="printAccessToken" flat>{{
+            state.timer.timeMonitor.minutes + ':' + state.timer.timeMonitor.seconds + ' / ' +
+            state.timer.timeMonitor.lengthMinutes + ':' + state.timer.timeMonitor.lengthSeconds }}
+          </v-btn>
+        <HelpDialog>
+          <v-flex>
+            <v-list>
+              <v-list-tile v-for="text in helpText" :key="text">
+                <v-list-tile-action>
+                  <v-icon>star</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content >
+                  <v-list-tile-title v-text="text"></v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-flex>
+        </HelpDialog>
+        <v-btn color="white" depressed @click="controller.restart()"><v-icon color="black">replay</v-icon></v-btn>
+        <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
+        <v-btn color="white" depressed v-if="isPlaying" @click="controller.pause()"><v-icon color="black">pause</v-icon></v-btn>
+        <v-btn color="white" depressed v-else @click="controller.start()"><v-icon color="black">play_arrow</v-icon></v-btn>
+        <v-btn color="white" depressed light @click="save">Save</v-btn>
+        <!-- <v-toolbar-items class="hidden-sm-and-down">
+          <v-select
+            item-text="text"
+            item-value="value"
+            :items="selectSmoothnessItems"
+            @input="setStrokeProperties"
+            v-model="smoothness"
+            label="Smoothness"
+            return-object
+            color='black'
+          ></v-select>
+        </v-toolbar-items> -->
+        <SettingsDialog>
+            <v-select
+              item-text="text"
+              item-value="value"
+              :items="selectColorItems"
+              @input="setStrokeProperties('stroke')"
+              v-model="color"
+              label="Color"
+              return-object
+              color='black'
+            ></v-select>
+            <v-select
+              item-text="text"
+              item-value="value"
+              :items="selectWidthItems"
+              @input="setStrokeProperties('stroke-width')"
+              v-model="width"
+              label="Width"
+              return-object
+              color="black"
+            ></v-select>
+            <v-select
+              item-text="text"
+              item-value="value"
+              :items="selectColorItems"
+              @input="setStrokeProperties('fill')"
+              v-model="fillColor"
+              label="Fill color"
+              return-object
+              color="black"
+            ></v-select>
+            <v-checkbox
+              v-model="fill"
+              @change="setStrokeProperties('fill')"
+              label="Fill"
+            ></v-checkbox>
+        </SettingsDialog>
+        <LoginButton />
+      </Toolbar>
+      <v-content ma-0 pa-0 style="padding: 0px">
+        <v-container fluid fill-height ma-0 pa-0>
+          <v-layout
+          justify-center
+          align-center
+          row wrap
+          >
             <v-flex text-xs-center>
               <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -138,16 +136,18 @@ import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
 import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
 import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
 import { StrokeAttributes } from 'draw-ts/lib/event/eventInterfaces';
+import Toolbar from '@/layouts/Toolbar.vue';
 import LoginButton from '@/components/LoginButton.vue';
 
 @Component({
   components: {
     SettingsDialog,
     HelpDialog,
+    Toolbar,
     LoginButton,
   },
 })
-export default class Main extends Vue {
+export default class Editor extends Vue {
   private state = new AppState();
   private drawer = false;
   private controller!: Controller;
@@ -266,6 +266,33 @@ export default class Main extends Vue {
     //   this.controller.start();
     // }
   }
+
+  private save(): void {
+    this.$auth.query(
+      'https://localhost:5001/api/create',
+      {
+        scopes: [
+          'https://incrementally.onmicrosoft.com/api/Recordings.Write',
+          'https://incrementally.onmicrosoft.com/api/Recordings.Read',
+        ],
+      },
+      'POST',
+      {
+        data: 'test',
+      },
+    )
+      .then((res) => res.json )
+      .then((json) => console.log(json));
+  }
+
+  private printAccessToken(): void {
+    this.$auth.getAccessTokenAsync({
+    scopes: [
+      'https://incrementally.onmicrosoft.com/api/Recordings.Write',
+      'https://incrementally.onmicrosoft.com/api/Recordings.Read',
+    ],
+  }).then((el) => console.log(el.accessToken));
+  }
 }
 </script>
 
@@ -286,7 +313,7 @@ a {
 }
 
 #svg {
-  border: 1px solid black;
+  border: 0px solid black;
 }
 
 </style>

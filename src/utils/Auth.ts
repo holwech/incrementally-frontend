@@ -29,13 +29,12 @@ export default class Auth {
     try {
       this.auth.authority = this.userFlows.signup;
       this.idToken = await this.auth.loginPopup();
-      console.log(this.idToken);
     } catch (e) {
       throw new Error(e);
     }
   }
 
-  public async getAccessToken(requestObject: AuthenticationParameters): Promise<AuthResponse> {
+  public async getAccessTokenAsync(requestObject: AuthenticationParameters): Promise<AuthResponse> {
     if (this.auth.getAccount()) {
       try {
         return await this.auth.acquireTokenSilent(requestObject);
@@ -51,13 +50,19 @@ export default class Auth {
     }
   }
 
-  public async query(endpoint: string, requestObject: AuthenticationParameters): Promise<Response> {
+  public async query(
+      endpoint: string,
+      requestObject: AuthenticationParameters,
+      method = 'GET',
+      body?: any,
+    ): Promise<Response> {
     const headers = new Headers();
-    const bearer = 'Bearer ' + await this.getAccessToken(requestObject);
+    const bearer = 'Bearer ' + await this.getAccessTokenAsync(requestObject);
     headers.append('Authorization', bearer);
     const options = {
-      method: 'GET',
+      method,
       headers,
+      body,
     };
     return fetch(endpoint, options);
   }

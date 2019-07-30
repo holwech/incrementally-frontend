@@ -4,11 +4,12 @@
     <v-menu offset-y>
       <template v-slot:activator="{ on }">
         <v-btn
-          color="yellow"
+          color="white"
           light
+          depressed
           v-on="on"
         >
-          <span> Profile </span>
+          <span> {{ loggedIn ?  'Profile' : 'Login'}} </span>
         </v-btn>
       </template>
       <v-list>
@@ -38,14 +39,17 @@ export default class LoginButton extends Vue {
   private username = 'Unknown';
   private loggedIn = false;
   private requestObject: AuthenticationParameters = {
-    scopes: ['https://incrementally.onmicrosoft.com/api/Recordings.Write'],
+    scopes: [
+      'https://incrementally.onmicrosoft.com/api/Recordings.Write',
+      'https://incrementally.onmicrosoft.com/api/Recordings.Read',
+    ],
   };
 
 
   private mounted(): void {
     if (this.$auth.account) {
+      // console.log(this.$auth.getAccessTokenAsync(this.requestObject).then((el) => el.accessToken));
       this.setLoginStatus();
-      console.log(this.$auth.getAccessToken(this.requestObject));
     }
   }
 
