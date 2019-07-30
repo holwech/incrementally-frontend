@@ -100,6 +100,7 @@
                   label="Fill"
                 ></v-checkbox>
             </SettingsDialog>
+            <LoginButton />
           </v-toolbar>
         <v-content ma-0 pa-0 style="padding: 0px">
           <v-container fluid fill-height ma-0 pa-0>
@@ -137,11 +138,13 @@ import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
 import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
 import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
 import { StrokeAttributes } from 'draw-ts/lib/event/eventInterfaces';
+import LoginButton from '@/components/LoginButton.vue';
 
 @Component({
   components: {
     SettingsDialog,
     HelpDialog,
+    LoginButton,
   },
 })
 export default class Main extends Vue {

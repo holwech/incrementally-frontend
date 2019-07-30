@@ -2,15 +2,15 @@ import Vue from 'vue';
 import './plugins/vuetify';
 import App from './App.vue';
 import store from './store';
-import Auth from './utils/Auth';
+import Auth, { IUserFlows } from './utils/Auth';
 import { Configuration, AuthenticationParameters } from 'msal';
 
 Vue.config.productionTip = false;
 
 const config: Configuration = {
   auth: {
-    clientId: 'f4873da0-2d4c-4c09-bc12-e16b20d533f7',
-    authority: 'https://login.microsoftonline.com/f5645dc2-3b1c-4ccf-9a0e-44b34d77eb58',
+    clientId: 'f8b8ed45-8ac1-442d-961d-c6efb6f2413b',
+    authority: 'https://login.microsoftonline.com/tfp/incrementally.onmicrosoft.com/signin',
   },
   cache: {
     cacheLocation: 'localStorage',
@@ -18,11 +18,18 @@ const config: Configuration = {
   },
 };
 
-const requestObject: AuthenticationParameters = {
-  scopes: ['user.read'],
+const userFlows: IUserFlows = {
+  signin: 'https://login.microsoftonline.com/tfp/incrementally.onmicrosoft.com/B2C_1_signin',
+  signup: 'https://login.microsoftonline.com/tfp/incrementally.onmicrosoft.com/B2C_1_signup',
 };
 
-Vue.prototype.$auth = new Auth(config, requestObject);
+declare module 'vue/types/vue' {
+  interface Vue {
+    $auth: Auth;
+  }
+}
+
+Vue.prototype.$auth = new Auth(config, userFlows);
 
 new Vue({
   store,
