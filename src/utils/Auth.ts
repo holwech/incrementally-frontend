@@ -57,12 +57,14 @@ export default class Auth {
       body?: any,
     ): Promise<Response> {
     const headers = new Headers();
-    const bearer = 'Bearer ' + await this.getAccessTokenAsync(requestObject);
+    const bearer = 'Bearer ' + (await this.getAccessTokenAsync(requestObject)).accessToken;
     headers.append('Authorization', bearer);
+    headers.append('Accept', 'application/json');
+    headers.append('Content-Type', 'application/json');
     const options = {
       method,
       headers,
-      body,
+      body: JSON.stringify(body),
     };
     return fetch(endpoint, options);
   }

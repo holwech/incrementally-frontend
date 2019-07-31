@@ -135,9 +135,9 @@ import AppState from 'draw-ts/lib/AppState';
 import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
 import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
 import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
-import { StrokeAttributes } from 'draw-ts/lib/event/eventInterfaces';
 import Toolbar from '@/layouts/Toolbar.vue';
 import LoginButton from '@/components/LoginButton.vue';
+import { StrokeAttributes } from 'draw-ts/lib/action/ActionInterfaces';
 
 @Component({
   components: {
@@ -268,6 +268,8 @@ export default class Editor extends Vue {
   }
 
   private save(): void {
+    console.log('Saving recording...');
+    const log = JSON.stringify(this.controller.app.recorder.getEventLog());
     this.$auth.query(
       'https://localhost:5001/api/create',
       {
@@ -278,14 +280,16 @@ export default class Editor extends Vue {
       },
       'POST',
       {
-        data: 'test',
+        data: log,
       },
     )
-      .then((res) => res.json )
+      .then((res) => res.json() )
       .then((json) => console.log(json));
+    console.log('Storing ' + String((encodeURI(log).split(/%..|./).length - 1) / 1000000) + ' MB');
   }
 
   private printAccessToken(): void {
+    console.log(this.$auth.idToken);
     this.$auth.getAccessTokenAsync({
     scopes: [
       'https://incrementally.onmicrosoft.com/api/Recordings.Write',
