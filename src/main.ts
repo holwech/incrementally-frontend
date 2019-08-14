@@ -12,7 +12,8 @@ Vue.config.productionTip = false;
 const config: Configuration = {
   auth: {
     clientId: 'f8b8ed45-8ac1-442d-961d-c6efb6f2413b',
-    authority: 'https://login.microsoftonline.com/tfp/incrementally.onmicrosoft.com/signin/v2.0/',
+    authority: 'https://incrementally.b2clogin.com/incrementally.onmicrosoft.com/B2C_1_signin',
+    validateAuthority: false,
   },
   cache: {
     cacheLocation: 'localStorage',
@@ -20,8 +21,8 @@ const config: Configuration = {
   },
 };
 const userFlows: IUserFlows = {
-  signin: 'https://login.microsoftonline.com/tfp/incrementally.onmicrosoft.com/B2C_1_signin/v2.0/',
-  signup: 'https://login.microsoftonline.com/tfp/incrementally.onmicrosoft.com/B2C_1_signup/v2.0/',
+  signin: 'https://incrementally.b2clogin.com/incrementally.onmicrosoft.com/B2C_1_signin',
+  signup: 'https://incrementally.b2clogin.com/incrementally.onmicrosoft.com/B2C_1_signup',
 };
 declare module 'vue/types/vue' {
   interface Vue {

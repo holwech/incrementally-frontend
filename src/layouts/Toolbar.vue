@@ -5,7 +5,7 @@
         Incrementally
       </router-link>
       <sup>
-        <span style="color:yellow">beta</span>
+        <span style="color:yellow" @click="betaText">beta</span>
       </sup>
     </v-toolbar-title>
     <v-spacer></v-spacer>
@@ -17,5 +17,9 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 @Component
-export default class Toolbar extends Vue { }
+export default class Toolbar extends Vue { 
+  private betaText() {
+    console.log(this.$auth.account);
+  }
+}
 </script>

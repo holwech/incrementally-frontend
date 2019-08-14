@@ -35,18 +35,19 @@ export default class Auth {
   }
 
   public async getAccessTokenAsync(requestObject: AuthenticationParameters): Promise<AuthResponse> {
-    if (this.auth.getAccount()) {
+    if (this.account) {
       try {
-        return await this.auth.acquireTokenSilent(requestObject);
+        return this.auth.acquireTokenSilent(requestObject);
       } catch (e) {
         if (this.requiresInteraction(e.errorCode)) {
-          return await this.auth.acquireTokenPopup(requestObject);
+          return this.auth.acquireTokenPopup(requestObject);
         } else {
           throw new Error(e);
         }
       }
     } else {
-      throw new Error('Manual login required');
+      await this.login();
+      return this.getAccessTokenAsync(requestObject);
     }
   }
 

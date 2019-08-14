@@ -289,7 +289,6 @@ export default class Editor extends Vue {
   }
 
   private printAccessToken(): void {
-    console.log(this.$auth.idToken);
     this.$auth.getAccessTokenAsync({
     scopes: [
       'https://incrementally.onmicrosoft.com/api/Recordings.Write',
