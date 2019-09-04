@@ -8,8 +8,14 @@ export interface IUserFlows {
 export default class Auth {
   public idToken?: AuthResponse;
   private auth: UserAgentApplication;
-  get account(): Account {
-    return this.auth.getAccount();
+
+  get account(): Account | undefined {
+    const accountObj = this.auth.getAccount();
+    if (accountObj && (Number(accountObj.idToken.exp) > (Date.now() / 1000))) {
+      return accountObj;
+    } else {
+      return undefined;
+    }
   }
 
   constructor(config: Configuration, private userFlows: IUserFlows) {
@@ -35,7 +41,7 @@ export default class Auth {
   }
 
   public async getAccessTokenAsync(requestObject: AuthenticationParameters): Promise<AuthResponse> {
-    if (this.account) {
+    if (this.account && (Number(this.account.idToken.exp) > (Date.now() / 1000))) {
       try {
         return this.auth.acquireTokenSilent(requestObject);
       } catch (e) {

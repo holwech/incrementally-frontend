@@ -68,7 +68,7 @@ export default class LoginButton extends Vue {
 
   private setLoginStatus(login: boolean = true): void {
     if (login) {
-      this.username = this.$auth.account.idTokenClaims.given_name;
+      this.username = this.$auth.account!.idTokenClaims.given_name;
       this.loggedIn = true;
     } else {
       this.username = 'Unknown';
