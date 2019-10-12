@@ -13,15 +13,14 @@
             <v-flex d-flex>
               <v-card color="grey darken-3" dark>
                 <svg
-                    class="svg-predisplay"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    version="1.1"
-                    id="svg"
-                    enable-background="new 0 0 1200 800"
-                    xml:space="preserve"
-                >
-                </svg>
+                  id="svg"
+                  class="svg-predisplay"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  version="1.1"
+                  enable-background="new 0 0 1200 800"
+                  xml:space="preserve"
+                ></svg>
                 <v-card-title primary-title>
                   <div>
                     <h3 class="headline mb-0">This is some stored SVG-video</h3>
@@ -29,23 +28,22 @@
                 </v-card-title>
                 <v-card-text>This is some description</v-card-text>
                 <v-card-actions>
-                  <v-btn flat color="blue">Open</v-btn>
-                  <v-btn flat color="blue">Delete</v-btn>
+                  <v-btn text color="blue">Open</v-btn>
+                  <v-btn text color="blue">Delete</v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
             <v-flex d-flex>
               <v-card color="grey darken-3" dark>
                 <svg
-                    class="svg-predisplay"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    version="1.1"
-                    id="svg"
-                    enable-background="new 0 0 1200 800"
-                    xml:space="preserve"
-                >
-                </svg>
+                  id="svg"
+                  class="svg-predisplay"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  version="1.1"
+                  enable-background="new 0 0 1200 800"
+                  xml:space="preserve"
+                ></svg>
                 <v-card-title primary-title>
                   <div>
                     <h3 class="headline mb-0">This is some stored SVG-video</h3>
@@ -53,23 +51,22 @@
                 </v-card-title>
                 <v-card-text>This is some description</v-card-text>
                 <v-card-actions>
-                  <v-btn flat color="blue">Open</v-btn>
-                  <v-btn flat color="blue">Delete</v-btn>
+                  <v-btn text color="blue">Open</v-btn>
+                  <v-btn text color="blue">Delete</v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
             <v-flex d-flex>
               <v-card color="grey darken-3" dark>
                 <svg
-                    class="svg-predisplay"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlns:xlink="http://www.w3.org/1999/xlink"
-                    version="1.1"
-                    id="svg"
-                    enable-background="new 0 0 1200 800"
-                    xml:space="preserve"
-                >
-                </svg>
+                  id="svg"
+                  class="svg-predisplay"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  version="1.1"
+                  enable-background="new 0 0 1200 800"
+                  xml:space="preserve"
+                ></svg>
                 <v-card-title primary-title>
                   <div>
                     <h3 class="headline mb-0">This is some stored SVG-video</h3>
@@ -77,8 +74,8 @@
                 </v-card-title>
                 <v-card-text>This is some description</v-card-text>
                 <v-card-actions>
-                  <v-btn flat color="blue">Open</v-btn>
-                  <v-btn flat color="blue">Delete</v-btn>
+                  <v-btn text color="blue">Open</v-btn>
+                  <v-btn text color="blue">Delete</v-btn>
                 </v-card-actions>
               </v-card>
             </v-flex>
@@ -97,11 +94,10 @@ import Toolbar from '@/layouts/Toolbar.vue';
 @Component({
   components: {
     LoginButton,
-    Toolbar,
-  },
+    Toolbar
+  }
 })
-export default class MainMenu extends Vue {
-}
+export default class MainMenu extends Vue {}
 </script>
 
 <style>
@@ -113,5 +109,4 @@ export default class MainMenu extends Vue {
 .svg-predisplay {
   width: 100%;
 }
-
 </style>

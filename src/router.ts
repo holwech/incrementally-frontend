@@ -1,23 +1,32 @@
-import VueRouter from 'vue-router';
+import Vue from 'vue';
 import Editor from '@/layouts/Editor.vue';
 import MainMenu from '@/layouts/MainMenu.vue';
+import Router from 'vue-router';
 
-const routes = [
-  {
-    path: '/',
-    component: MainMenu,
-    name: 'MainMenu',
-  },
-  {
-    path: '/editor',
-    component: Editor,
-    name: 'Editor',
-  },
-];
+Vue.use(Router);
 
-const router = new VueRouter({
+export default new Router({
   mode: 'history',
-  routes,
+  base: process.env.BASE_URL,
+  routes: [
+    {
+      path: '/',
+      component: MainMenu,
+      name: 'MainMenu'
+    },
+    {
+      path: '/editor',
+      component: Editor,
+      name: 'Editor'
+    },
+    {
+      path: '/about',
+      name: 'about',
+      // route level code-splitting
+      // this generates a separate chunk (about.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () =>
+        import(/* webpackChunkName: "about" */ './views/About.vue')
+    }
+  ]
 });
-
-export default router;

@@ -1,4 +1,10 @@
-import { UserAgentApplication, Configuration, AuthenticationParameters, AuthResponse, Account } from 'msal';
+import {
+  UserAgentApplication,
+  Configuration,
+  AuthenticationParameters,
+  AuthResponse,
+  Account
+} from 'msal';
 
 export interface IUserFlows {
   signin: string;
@@ -7,11 +13,12 @@ export interface IUserFlows {
 
 export default class Auth {
   public idToken?: AuthResponse;
+  public accessToken?: string;
   private auth: UserAgentApplication;
 
   get account(): Account | undefined {
     const accountObj = this.auth.getAccount();
-    if (accountObj && (Number(accountObj.idToken.exp) > (Date.now() / 1000))) {
+    if (accountObj && Number(accountObj.idToken.exp) > Date.now() / 1000) {
       return accountObj;
     } else {
       return undefined;
@@ -40,8 +47,10 @@ export default class Auth {
     }
   }
 
-  public async getAccessTokenAsync(requestObject: AuthenticationParameters): Promise<AuthResponse> {
-    if (this.account && (Number(this.account.idToken.exp) > (Date.now() / 1000))) {
+  public async getAccessTokenAsync(
+    requestObject: AuthenticationParameters
+  ): Promise<AuthResponse> {
+    if (this.account && Number(this.account.idToken.exp) > Date.now() / 1000) {
       try {
         return this.auth.acquireTokenSilent(requestObject);
       } catch (e) {
@@ -58,20 +67,21 @@ export default class Auth {
   }
 
   public async query(
-      endpoint: string,
-      requestObject: AuthenticationParameters,
-      method = 'GET',
-      body?: any,
-    ): Promise<Response> {
+    endpoint: string,
+    requestObject: AuthenticationParameters,
+    method = 'GET',
+    body?: any
+  ): Promise<Response> {
     const headers = new Headers();
-    const bearer = 'Bearer ' + (await this.getAccessTokenAsync(requestObject)).accessToken;
+    const bearer =
+      'Bearer ' + (await this.getAccessTokenAsync(requestObject)).accessToken;
     headers.append('Authorization', bearer);
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json');
     const options = {
       method,
       headers,
-      body: JSON.stringify(body),
+      body: JSON.stringify(body)
     };
     return fetch(endpoint, options);
   }
@@ -84,8 +94,10 @@ export default class Auth {
     if (!errorCode || !errorCode.length) {
       return false;
     }
-    return errorCode === 'consent_required' ||
-           errorCode === 'interaction_required' ||
-           errorCode === 'login_required';
+    return (
+      errorCode === 'consent_required' ||
+      errorCode === 'interaction_required' ||
+      errorCode === 'login_required'
+    );
   }
 }

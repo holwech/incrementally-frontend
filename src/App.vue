@@ -15,9 +15,8 @@ import Component from 'vue-class-component';
 @Component({
   components: {
     Editor,
-    MainMenu,
-  },
+    MainMenu
+  }
 })
-export default class App extends Vue {
-}
+export default class App extends Vue {}
 </script>

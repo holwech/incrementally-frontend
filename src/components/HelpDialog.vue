@@ -1,24 +1,17 @@
 <template>
   <div>
-    <v-btn depressed color="white" light @click="dialog = true" >
+    <v-btn depressed color="white" light @click="dialog = true">
       <span color="black"> Help </span>
     </v-btn>
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
+    <v-dialog v-model="dialog" width="500">
       <v-card>
-        <v-card-title
-          class="headline"
-          primary-title
-        >
+        <v-card-title class="headline" primary-title>
           Help
         </v-card-title>
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <slot>
-              </slot>
+              <slot> </slot>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -27,11 +20,7 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn
-            color="primary"
-            flat
-            @click="dialog = false"
-          >
+          <v-btn color="primary" text @click="dialog = false">
             Close
           </v-btn>
         </v-card-actions>
@@ -46,6 +35,5 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 @Component
 export default class HelpDialog extends Vue {
   private dialog = false;
-
 }
 </script>
