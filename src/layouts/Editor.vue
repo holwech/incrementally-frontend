@@ -25,7 +25,7 @@
           </v-list-tile>
         </v-list>
         </v-navigation-drawer> -->
-      <Toolbar>
+      <Toolbar :show-collapse-button="true">
         <v-btn text @click="printAccessToken"
           >{{
             state.timer.timeMonitor.minutes +
@@ -37,32 +37,14 @@
               state.timer.timeMonitor.lengthSeconds
           }}
         </v-btn>
-        <HelpDialog>
-          <v-flex>
-            <v-list>
-              <v-list-tile v-for="text in helpText" :key="text">
-                <v-list-tile-action>
-                  <v-icon>star</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title v-text="text"></v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
-            </v-list>
-          </v-flex>
-        </HelpDialog>
-        <v-btn color="white" depressed @click="controller.restart()"
-          ><v-icon color="black">replay</v-icon></v-btn
-        >
+        <v-btn depressed tile text @click="controller.restart()">
+          <v-icon>replay</v-icon>
+        </v-btn>
         <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
-        <v-btn
-          v-if="isPlaying"
-          color="white"
-          depressed
-          @click="controller.pause()"
-          ><v-icon color="black">pause</v-icon></v-btn
+        <v-btn v-if="isPlaying" tile depressed text @click="controller.pause()"
+          ><v-icon color="red">fiber_manual_record</v-icon></v-btn
         >
-        <v-btn v-else color="white" depressed @click="controller.start()"
+        <v-btn v-else color="white" tile depressed @click="controller.start()"
           ><v-icon color="black">play_arrow</v-icon></v-btn
         >
         <SaveDialog @save="save"></SaveDialog>
@@ -115,6 +97,20 @@
             @change="setStrokeProperties('fill')"
           ></v-checkbox>
         </SettingsDialog>
+        <HelpDialog>
+          <v-flex>
+            <v-list>
+              <v-list-tile v-for="text in helpText" :key="text">
+                <v-list-tile-action>
+                  <v-icon>star</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title v-text="text"></v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </v-list>
+          </v-flex>
+        </HelpDialog>
         <LoginButton />
       </Toolbar>
       <v-content ma-0 pa-0 style="padding: 0px">
@@ -280,10 +276,9 @@ export default class Editor extends Vue {
     // }
   }
 
-  private save(someinput: SaveDialogForm): void {
+  private save(saveDialogForm: SaveDialogForm): void {
     console.log('Saving recording...');
-    //const log = JSON.stringify(this.controller!.app.recorder.getEventLog());
-    const log = 'test';
+    const log = JSON.stringify(this.controller!.app.recorder.getEventLog());
     this.$auth
       .query(
         'https://localhost:5001/api/create',
@@ -295,7 +290,9 @@ export default class Editor extends Vue {
         },
         'POST',
         {
-          data: log
+          Title: saveDialogForm.title.value,
+          Description: saveDialogForm.description.value,
+          Recording: log
         }
       )
       .then(res => res.json())

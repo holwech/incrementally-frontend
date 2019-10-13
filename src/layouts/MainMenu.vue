@@ -3,7 +3,7 @@
     <v-app id="inspire">
       <Toolbar>
         <router-link :to="{ name: 'Editor' }">
-          <v-btn color="white" light depressed>Open editor</v-btn>
+          <v-btn outlined tile>Open editor</v-btn>
         </router-link>
         <LoginButton />
       </Toolbar>

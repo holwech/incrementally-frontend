@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-btn depressed color="white" light @click="dialog = true">
+    <v-btn color="white" class="ml-1" tile outlined @click="dialog = true">
       <span color="black"> Help </span>
     </v-btn>
     <v-dialog v-model="dialog" width="500">

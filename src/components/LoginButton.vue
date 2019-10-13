@@ -3,23 +3,23 @@
   <div class="text-xs-center">
     <v-menu offset-y>
       <template v-slot:activator="{ on }">
-        <v-btn color="white" light depressed v-on="on">
+        <v-btn color="white" class="ml-1" tile outlined v-on="on">
           <span> {{ loggedIn ? 'Profile' : 'Login' }} </span>
         </v-btn>
       </template>
-      <v-list>
-        <v-list-tile v-if="loggedIn">
-          <v-list-tile-title>{{ username }}</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile v-if="loggedIn" @click="logout">
-          <v-list-tile-title>Logout</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile v-if="!loggedIn" @click="signup">
-          <v-list-tile-title>Sign up</v-list-tile-title>
-        </v-list-tile>
-        <v-list-tile v-if="!loggedIn" @click="login">
-          <v-list-tile-title>Login</v-list-tile-title>
-        </v-list-tile>
+      <v-list flat tile>
+        <v-list-item v-if="loggedIn">
+          <v-list-item-title>{{ username }}</v-list-item-title>
+        </v-list-item>
+        <v-list-item v-if="loggedIn" @click="logout">
+          <v-list-item-title>Logout</v-list-item-title>
+        </v-list-item>
+        <v-list-item v-if="!loggedIn" @click="signup">
+          <v-list-item-title>Sign up</v-list-item-title>
+        </v-list-item>
+        <v-list-item v-if="!loggedIn" @click="login">
+          <v-list-item-title>Login</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
   </div>

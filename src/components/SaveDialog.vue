@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-btn depressed color="white" light @click="dialog = true">
-      <span color="black"> Save </span>
+    <v-btn color="white" class="ml-1" tile outlined @click="dialog = true">
+      <span> Save </span>
     </v-btn>
     <v-dialog v-model="dialog" width="500">
       <v-card>
@@ -52,6 +52,7 @@ export interface SaveDialogFormElement {
 
 export interface SaveDialogForm {
   title: SaveDialogFormElement;
+  description: SaveDialogFormElement;
 }
 
 @Component
@@ -65,6 +66,10 @@ export default class SaveDialog extends Vue {
   };
   private form: SaveDialogForm = {
     title: {
+      value: '',
+      rules: [this.rules.required, this.rules.min]
+    },
+    description: {
       value: '',
       rules: [this.rules.required, this.rules.min]
     }
