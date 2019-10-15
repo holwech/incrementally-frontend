@@ -200,7 +200,6 @@ export default class Editor extends Vue {
   ];
 
   private saveDialogOpen(dialog: boolean) {
-    console.log('heeeluuu');
     this.saveDialog = dialog;
   }
 

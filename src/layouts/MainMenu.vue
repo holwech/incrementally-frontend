@@ -78,6 +78,7 @@ interface RecordingMetadata {
     Toolbar
   }
 })
+
 export default class MainMenu extends Vue {
   private entries = Array<RecordingMetadata>();
 
