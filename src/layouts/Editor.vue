@@ -47,7 +47,7 @@
         <v-btn v-else color="white" tile depressed @click="controller.start()"
           ><v-icon color="black">play_arrow</v-icon></v-btn
         >
-        <SaveDialog @save="save"></SaveDialog>
+        <SaveDialog @save="save" @onDialogOpen="saveDialogOpen"></SaveDialog>
         <!-- <v-toolbar-items class="hidden-sm-and-down">
           <v-select
             item-text="text"
@@ -165,6 +165,7 @@ export default class Editor extends Vue {
   private recordColor = 'grey';
   private recording = false;
   private playing = false;
+  private saveDialog = false;
   private msg: string = 'Drawing board';
   private smoothness = { text: '4 - Sharp curves', value: 4 };
   private slider = 0;
@@ -198,7 +199,15 @@ export default class Editor extends Vue {
     'Click on drawing to remove it'
   ];
 
+  private saveDialogOpen(dialog: boolean) {
+    console.log('heeeluuu');
+    this.saveDialog = dialog;
+  }
+
   private playToggle(e: KeyboardEvent): void {
+    if (this.saveDialog) {
+      return;
+    }
     if (e.keyCode === 32 || e.key === ' ') {
       if (this.isPlaying) {
         this.controller!.pause();
