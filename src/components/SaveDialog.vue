@@ -11,16 +11,22 @@
         <v-card-text>
           <v-container grid-list-md>
             <v-layout wrap>
-              <v-row>
-                <v-text-field
-                  v-model="form.title.value"
-                  label="Title"
-                  :rules="form.title.rules"
-                ></v-text-field>
-              </v-row>
-              <v-row>
-                <v-textarea label="Description"></v-textarea>
-              </v-row>
+              <v-col md12>
+                <v-row>
+                  <v-text-field
+                    v-model="form.title.value"
+                    label="Title"
+                    :rules="form.title.rules"
+                  ></v-text-field>
+                </v-row>
+                <v-row>
+                  <v-textarea
+                    v-model="form.description.value"
+                    label="Description"
+                    :rules="form.description.rules"
+                  ></v-textarea>
+                </v-row>
+              </v-col>
             </v-layout>
           </v-container>
         </v-card-text>
@@ -74,6 +80,11 @@ export default class SaveDialog extends Vue {
       rules: [this.rules.required, this.rules.min]
     }
   };
+
+  @Watch('dialog')
+  private emitDialogOpen() {
+    this.$emit('onDialogOpen', this.dialog);
+  }
 
   @Watch('form', { deep: true })
   private verify(): void {
