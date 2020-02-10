@@ -37,8 +37,8 @@ export default class Toolbar extends Vue {
     this.$auth
       .getAccessTokenAsync({
         scopes: [
-          'https://incrementally.onmicrosoft.com/api/Recordings.Write',
-          'https://incrementally.onmicrosoft.com/api/Recordings.Read'
+          process.env.VUE_APP_SCOPE_WRITE,
+          process.env.VUE_APP_SCOPE_READ
         ]
       })
       .then(token => console.log(token.accessToken));

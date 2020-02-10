@@ -20,6 +20,12 @@ export default new Router({
       name: 'Editor'
     },
     {
+      path: '/editor/:id',
+      props: true,
+      component: Editor,
+      name: 'EditorWithLoad'
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
