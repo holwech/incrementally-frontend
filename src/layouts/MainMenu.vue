@@ -78,7 +78,7 @@ export default class MainMenu extends Vue {
 
   private mounted(): void {
     this.$auth
-      .query(process.env.VUE_APP_URL + 'api/metadata', {
+      .query(process.env.VUE_APP_URL + '/api/metadata', {
         scopes: [
           process.env.VUE_APP_SCOPE_WRITE,
           process.env.VUE_APP_SCOPE_READ

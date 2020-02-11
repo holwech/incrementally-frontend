@@ -237,14 +237,14 @@ export default class Editor extends Vue {
   private mounted(): void {
     if (this.id) {
       this.$auth
-        .query(process.env.VUE_APP_URL + 'api/metadata', {
+        .query(process.env.VUE_APP_URL + '/api/metadata', {
           scopes: [
             process.env.VUE_APP_SCOPE_WRITE,
             process.env.VUE_APP_SCOPE_READ
           ]
         }, 'GET', null, false)
         .then(res => res.json())
-        .then(json => (this.entries = json));
+        .then(json => this.entries = json);
     }
     this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
     this.controller.init([
