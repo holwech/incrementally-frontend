@@ -26,6 +26,14 @@
         </v-list>
         </v-navigation-drawer> -->
       <Toolbar :show-collapse-button="true">
+        <v-toolbar-title>
+          {{ recordingMetadata.title }}
+          <v-progress-circular
+            v-if="loading"
+            indeterminate
+            color="white"
+          ></v-progress-circular>
+        </v-toolbar-title>
         <v-btn text @click="printAccessToken"
           >{{
             timer.timeMonitor.minutes +
@@ -146,6 +154,9 @@ import { StrokeAttributes } from 'drawify/lib/Interfaces/ActionInterfaces';
 import { AppStates } from 'drawify/lib/Interfaces/AppInterfaces';
 import { RecordController } from 'drawify/lib/Controllers/RecordController';
 import Timer from 'drawify/lib/Timer/Timer';
+import { PlayBaseController } from 'drawify/lib/Controllers/PlayBaseController';
+import RecordingMetadata from '../models/RecordingMetadata';
+import IRecordingEntry from '@/models/RecordingEntry';
 
 @Component({
   components: {
@@ -159,10 +170,19 @@ import Timer from 'drawify/lib/Timer/Timer';
 export default class Editor extends Vue {
   @Prop(String) readonly id?: string;
 
+  private recordingMetadata: RecordingMetadata = {
+    createdBy: '',
+    description: '',
+    givenName: '',
+    id: '',
+    surname: '',
+    title: ''
+  };
   private state = new AppState();
   private drawer = false;
   private container: ServiceBuilder = new ServiceBuilder();
   private controller?: Service = undefined;
+  private loading = false;
   private entries: any = {};
   private timer = new Timer();
   private dialog = false;
@@ -235,27 +255,44 @@ export default class Editor extends Vue {
   }
 
   private mounted(): void {
+    this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
+    let player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
     if (this.id) {
+      console.log("Loading video")
       this.$auth
-        .query(process.env.VUE_APP_URL + '/api/metadata', {
+        .query(process.env.VUE_APP_URL + `/api/metadata/${this.id}`, {
           scopes: [
             process.env.VUE_APP_SCOPE_WRITE,
             process.env.VUE_APP_SCOPE_READ
           ]
         }, 'GET', null, false)
         .then(res => res.json())
-        .then(json => this.entries = json);
+        .then(json =>  this.recordingMetadata = json[0]);
+      this.$auth
+        .query(process.env.VUE_APP_URL + `/api/recording/${this.id}`, {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        }, 'GET')
+        .then(res => {
+          this.loading = true;
+          return res.json()
+        })
+        .then((json: IRecordingEntry[]) => player.setEventLog(JSON.parse(json[0].recording)))
+        .then(() => this.loading = false);
+        //.then(json => console.log(JSON.parse(json[0].recording)));
+    } else {
+      this.controller.init([
+        { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
+        { targetAttr: StrokeAttributes.WIDTH, value: this.width.value },
+        {
+          targetAttr: StrokeAttributes.BUFFER_SIZE,
+          value: this.smoothness.value
+        },
+        { targetAttr: StrokeAttributes.FILL, value: undefined }
+      ]);
     }
-    this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
-    this.controller.init([
-      { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
-      { targetAttr: StrokeAttributes.WIDTH, value: this.width.value },
-      {
-        targetAttr: StrokeAttributes.BUFFER_SIZE,
-        value: this.smoothness.value
-      },
-      { targetAttr: StrokeAttributes.FILL, value: undefined }
-    ]);
     window.addEventListener('keydown', this.panOn);
     window.addEventListener('keyup', this.panOff);
     window.addEventListener('keydown', this.playToggle);
@@ -316,9 +353,9 @@ export default class Editor extends Vue {
         },
         'POST',
         {
+          Recording: log,
           Title: saveDialogForm.title.value,
-          Description: saveDialogForm.description.value,
-          Recording: log
+          Description: saveDialogForm.description.value
         }
       )
       .then(res => console.log(res));
