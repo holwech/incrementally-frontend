@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "core-js": "^2.6.11",
-    "drawify": "file:../drawify/drawify-0.0.2.tgz",
     "eslint-config-prettier": "^6.7.0",
     "msal": "^1.2.0",
     "reflect-metadata": "^0.1.13",

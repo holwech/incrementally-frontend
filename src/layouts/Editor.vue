@@ -180,7 +180,7 @@ export default class Editor extends Vue {
   };
   private state = new AppState();
   private drawer = false;
-  private container: ServiceBuilder = new ServiceBuilder();
+  private container?: ServiceBuilder;
   private controller?: Service = undefined;
   private loading = false;
   private entries: any = {};
@@ -255,6 +255,7 @@ export default class Editor extends Vue {
   }
 
   private mounted(): void {
+    this.container = new ServiceBuilder();
     this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
     let player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
     if (this.id) {
@@ -339,7 +340,7 @@ export default class Editor extends Vue {
 
   private save(saveDialogForm: SaveDialogForm): void {
     console.log('Saving recording...');
-    let recorder = this.container.getContainer().resolve<RecordController>(RecordController);
+    let recorder = this.container!.getContainer().resolve<RecordController>(RecordController);
     const log = JSON.stringify(recorder.getEventLog());
     console.log(log);
     this.$auth
