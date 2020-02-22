@@ -66,6 +66,15 @@ import LoginButton from '@/components/LoginButton.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
 import RecordingMetadata from '@/models/RecordingMetadata';
 
+interface RecordingMetadata {
+  createdBy: string;
+  description: string;
+  givenName: string;
+  id: string;
+  surname: string;
+  title: string;
+}
+
 @Component({
   components: {
     LoginButton,
