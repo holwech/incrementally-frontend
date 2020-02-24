@@ -47,7 +47,11 @@
               </v-card-title>
               <v-card-text>{{ entry.description }}</v-card-text>
               <v-card-actions>
-                <v-btn text color="blue">Open</v-btn>
+                <router-link
+                  :to="{ name: 'EditorWithLoad', params: { id: entry.id } }"
+                >
+                  <v-btn text color="blue">Open</v-btn>
+                </router-link>
                 <v-btn text color="blue">Delete</v-btn>
               </v-card-actions>
             </v-card>
@@ -78,19 +82,23 @@ interface RecordingMetadata {
     Toolbar
   }
 })
-
 export default class MainMenu extends Vue {
   private entries = Array<RecordingMetadata>();
 
   private mounted(): void {
-    console.log('Saving recording...');
     this.$auth
-      .query('https://localhost:5001/api/metadata', {
-        scopes: [
-          'https://incrementally.onmicrosoft.com/api/Recordings.Write',
-          'https://incrementally.onmicrosoft.com/api/Recordings.Read'
-        ]
-      })
+      .query(
+        process.env.VUE_APP_URL + '/api/metadata',
+        {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        },
+        'GET',
+        null,
+        false
+      )
       .then(res => res.json())
       .then(json => (this.entries = json));
   }

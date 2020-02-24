@@ -26,15 +26,23 @@
         </v-list>
         </v-navigation-drawer> -->
       <Toolbar :show-collapse-button="true">
+        <v-toolbar-title>
+          {{ recordingMetadata.title }}
+          <v-progress-circular
+            v-if="loading"
+            indeterminate
+            color="white"
+          ></v-progress-circular>
+        </v-toolbar-title>
         <v-btn text @click="printAccessToken"
           >{{
-            state.timer.timeMonitor.minutes +
+            timer.timeMonitor.minutes +
               ':' +
-              state.timer.timeMonitor.seconds +
+              timer.timeMonitor.seconds +
               ' / ' +
-              state.timer.timeMonitor.lengthMinutes +
+              timer.timeMonitor.lengthMinutes +
               ':' +
-              state.timer.timeMonitor.lengthSeconds
+              timer.timeMonitor.lengthSeconds
           }}
         </v-btn>
         <v-btn depressed tile text @click="controller.restart()">
@@ -122,9 +130,6 @@
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 version="1.1"
-                viewBox="0 0 1200 800"
-                enable-background="new 0 0 1200 800"
-                xml:space="preserve"
               ></svg>
             </v-flex>
           </v-layout>
@@ -135,18 +140,23 @@
 </template>
 
 <script lang="ts">
+import "reflect-metadata";
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SettingsDialog from '@/components/SettingsDialog.vue';
 import HelpDialog from '@/components/HelpDialog.vue';
 import SaveDialog, { SaveDialogForm } from '@/components/SaveDialog.vue';
-import { Controller } from 'draw-ts';
-import AppState from 'draw-ts/lib/AppState';
-import { BoardState, IStrokeProps } from 'draw-ts/lib/utils/boardInterfaces';
-import { AppStates } from 'draw-ts/lib/utils/appInterfaces';
-import { PlayStates } from 'draw-ts/lib/player/playInterfaces';
 import Toolbar from '@/layouts/Toolbar.vue';
 import LoginButton from '@/components/LoginButton.vue';
-import { StrokeAttributes } from 'draw-ts/lib/action/ActionInterfaces';
+import Service from 'drawify/lib/Controllers/Service';
+import AppState from 'drawify/lib/State/AppState';
+import ServiceBuilder from 'drawify';
+import { StrokeAttributes } from 'drawify/lib/Interfaces/ActionInterfaces';
+import { AppStates } from 'drawify/lib/Interfaces/AppInterfaces';
+import { RecordController } from 'drawify/lib/Controllers/RecordController';
+import Timer from 'drawify/lib/Timer/Timer';
+import { PlayBaseController } from 'drawify/lib/Controllers/PlayBaseController';
+import RecordingMetadata from '../models/RecordingMetadata';
+import IRecordingEntry from '@/models/RecordingEntry';
 
 @Component({
   components: {
@@ -158,9 +168,23 @@ import { StrokeAttributes } from 'draw-ts/lib/action/ActionInterfaces';
   }
 })
 export default class Editor extends Vue {
+  @Prop(String) readonly id?: string;
+
+  private recordingMetadata: RecordingMetadata = {
+    createdBy: '',
+    description: '',
+    givenName: '',
+    id: '',
+    surname: '',
+    title: ''
+  };
   private state = new AppState();
   private drawer = false;
-  private controller?: Controller = undefined;
+  private container?: ServiceBuilder;
+  private controller?: Service = undefined;
+  private loading = false;
+  private entries: any = {};
+  private timer = new Timer();
   private dialog = false;
   private recordColor = 'grey';
   private recording = false;
@@ -231,15 +255,45 @@ export default class Editor extends Vue {
   }
 
   private mounted(): void {
-    this.controller = new Controller('svg', this.state, [
-      { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
-      { targetAttr: StrokeAttributes.WIDTH, value: this.width.value },
-      {
-        targetAttr: StrokeAttributes.BUFFER_SIZE,
-        value: this.smoothness.value
-      },
-      { targetAttr: StrokeAttributes.FILL, value: undefined }
-    ]);
+    this.container = new ServiceBuilder();
+    this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
+    let player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
+    if (this.id) {
+      console.log("Loading video")
+      this.$auth
+        .query(process.env.VUE_APP_URL + `/api/metadata/${this.id}`, {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        }, 'GET', null, false)
+        .then(res => res.json())
+        .then(json =>  this.recordingMetadata = json[0]);
+      this.$auth
+        .query(process.env.VUE_APP_URL + `/api/recording/${this.id}`, {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        }, 'GET')
+        .then(res => {
+          this.loading = true;
+          return res.json()
+        })
+        .then((json: IRecordingEntry[]) => player.setEventLog(JSON.parse(json[0].recording)))
+        .then(() => this.loading = false);
+        //.then(json => console.log(JSON.parse(json[0].recording)));
+    } else {
+      this.controller.init([
+        { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
+        { targetAttr: StrokeAttributes.WIDTH, value: this.width.value },
+        {
+          targetAttr: StrokeAttributes.BUFFER_SIZE,
+          value: this.smoothness.value
+        },
+        { targetAttr: StrokeAttributes.FILL, value: undefined }
+      ]);
+    }
     window.addEventListener('keydown', this.panOn);
     window.addEventListener('keyup', this.panOff);
     window.addEventListener('keydown', this.playToggle);
@@ -286,25 +340,26 @@ export default class Editor extends Vue {
 
   private save(saveDialogForm: SaveDialogForm): void {
     console.log('Saving recording...');
-    const log = JSON.stringify(this.controller!.app.recorder.getEventLog());
+    let recorder = this.container!.getContainer().resolve<RecordController>(RecordController);
+    const log = JSON.stringify(recorder.getEventLog());
+    console.log(log);
     this.$auth
       .query(
-        'https://localhost:5001/api/create',
+        process.env.VUE_APP_URL + '/api/create',
         {
           scopes: [
-            'https://incrementally.onmicrosoft.com/api/Recordings.Write',
-            'https://incrementally.onmicrosoft.com/api/Recordings.Read'
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
           ]
         },
         'POST',
         {
+          Recording: log,
           Title: saveDialogForm.title.value,
-          Description: saveDialogForm.description.value,
-          Recording: log
+          Description: saveDialogForm.description.value
         }
       )
-      .then(res => res.json())
-      .then(json => console.log(json));
+      .then(res => console.log(res));
     console.log(
       'Storing ' +
         String((encodeURI(log).split(/%..|./).length - 1) / 1000000) +
@@ -316,8 +371,8 @@ export default class Editor extends Vue {
     this.$auth
       .getAccessTokenAsync({
         scopes: [
-          'https://incrementally.onmicrosoft.com/api/Recordings.Write',
-          'https://incrementally.onmicrosoft.com/api/Recordings.Read'
+          process.env.VUE_APP_SCOPE_WRITE,
+          process.env.VUE_APP_SCOPE_READ
         ]
       })
       .then(el => console.log(el.accessToken));

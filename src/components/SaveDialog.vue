@@ -49,7 +49,6 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { Controller } from 'draw-ts';
 
 export interface SaveDialogFormElement {
   value: string;

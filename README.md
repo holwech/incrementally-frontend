@@ -6,6 +6,6 @@ View a running example [here](https://priceless-hodgkin-3234a5.netlify.com/)
 
 ### Developing
 
-This example uses the `draw-ts` package. For developing the `draw-ts` package locally, a library called `npm-link-copy` is used to automatically update the package.
+This example uses the `drawify` package. For developing the `drawify` package locally, a library called `npm-link-copy` is used to automatically update the package.
 
 Run `npm install -g laggingreflex/npm-link-copy` to install, got to the project folder (`some/path/to/draw-frontend`) and run `npm-link-copy ../some/path/to/draw -w`.

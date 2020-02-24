@@ -2,7 +2,7 @@ import Vue from 'vue';
 import router from './router';
 import vuetify from './plugins/vuetify';
 import App from './App.vue';
-import store from './store';
+import store from './store/store';
 import Auth, { IUserFlows } from './utils/Auth';
 import { Configuration } from 'msal';
 import VueRouter from 'vue-router';

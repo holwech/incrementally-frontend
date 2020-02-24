@@ -70,19 +70,24 @@ export default class Auth {
     endpoint: string,
     requestObject: AuthenticationParameters,
     method = 'GET',
-    body?: any
+    body?: any,
+    authorize = true
   ): Promise<Response> {
     const headers = new Headers();
-    const bearer =
-      'Bearer ' + (await this.getAccessTokenAsync(requestObject)).accessToken;
-    headers.append('Authorization', bearer);
+    if (authorize) {
+      const bearer =
+        'Bearer ' + (await this.getAccessTokenAsync(requestObject)).accessToken;
+      headers.append('Authorization', bearer);
+    }
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json');
-    const options = {
+    const options: { [key: string]: any} = {
       method,
-      headers,
-      body: JSON.stringify(body)
+      headers
     };
+    if (body) {
+      options.body = JSON.stringify(body);
+    }
     return fetch(endpoint, options);
   }
 
