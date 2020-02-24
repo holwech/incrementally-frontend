@@ -81,7 +81,7 @@ export default class Auth {
     }
     headers.append('Accept', 'application/json');
     headers.append('Content-Type', 'application/json');
-    const options: { [key: string]: any} = {
+    const options: { [key: string]: any } = {
       method,
       headers
     };

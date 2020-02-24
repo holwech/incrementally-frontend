@@ -49,12 +49,12 @@
           <v-icon>replay</v-icon>
         </v-btn>
         <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
-        <v-btn v-if="isPlaying" tile depressed text @click="controller.pause()"
-          ><v-icon color="red">fiber_manual_record</v-icon></v-btn
-        >
-        <v-btn v-else color="white" tile depressed @click="controller.start()"
-          ><v-icon color="black">play_arrow</v-icon></v-btn
-        >
+        <v-btn v-if="isPlaying" tile depressed text @click="controller.pause()">
+          <v-icon color="red">fiber_manual_record</v-icon>
+        </v-btn>
+        <v-btn v-else color="white" tile depressed @click="controller.start()">
+          <v-icon color="black">play_arrow</v-icon>
+        </v-btn>
         <SaveDialog @save="save" @onDialogOpen="saveDialogOpen"></SaveDialog>
         <!-- <v-toolbar-items class="hidden-sm-and-down">
           <v-select
@@ -140,7 +140,7 @@
 </template>
 
 <script lang="ts">
-import "reflect-metadata";
+import 'reflect-metadata';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SettingsDialog from '@/components/SettingsDialog.vue';
 import HelpDialog from '@/components/HelpDialog.vue';
@@ -256,33 +256,51 @@ export default class Editor extends Vue {
 
   private mounted(): void {
     this.container = new ServiceBuilder();
-    this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
-    let player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
+    this.controller = this.container.build(
+      document.getElementById('svg')!,
+      this.state,
+      this.timer
+    );
+    let player = this.container
+      .getContainer()
+      .resolve<PlayBaseController>(PlayBaseController);
     if (this.id) {
-      console.log("Loading video")
+      console.log('Loading video');
       this.$auth
-        .query(process.env.VUE_APP_URL + `/api/metadata/${this.id}`, {
-          scopes: [
-            process.env.VUE_APP_SCOPE_WRITE,
-            process.env.VUE_APP_SCOPE_READ
-          ]
-        }, 'GET', null, false)
+        .query(
+          process.env.VUE_APP_URL + `/api/metadata/${this.id}`,
+          {
+            scopes: [
+              process.env.VUE_APP_SCOPE_WRITE,
+              process.env.VUE_APP_SCOPE_READ
+            ]
+          },
+          'GET',
+          null,
+          false
+        )
         .then(res => res.json())
-        .then(json =>  this.recordingMetadata = json[0]);
+        .then(json => (this.recordingMetadata = json[0]));
       this.$auth
-        .query(process.env.VUE_APP_URL + `/api/recording/${this.id}`, {
-          scopes: [
-            process.env.VUE_APP_SCOPE_WRITE,
-            process.env.VUE_APP_SCOPE_READ
-          ]
-        }, 'GET')
+        .query(
+          process.env.VUE_APP_URL + `/api/recording/${this.id}`,
+          {
+            scopes: [
+              process.env.VUE_APP_SCOPE_WRITE,
+              process.env.VUE_APP_SCOPE_READ
+            ]
+          },
+          'GET'
+        )
         .then(res => {
           this.loading = true;
-          return res.json()
+          return res.json();
         })
-        .then((json: IRecordingEntry[]) => player.setEventLog(JSON.parse(json[0].recording)))
-        .then(() => this.loading = false);
-        //.then(json => console.log(JSON.parse(json[0].recording)));
+        .then((json: IRecordingEntry[]) =>
+          player.setEventLog(JSON.parse(json[0].recording))
+        )
+        .then(() => (this.loading = false));
+      //.then(json => console.log(JSON.parse(json[0].recording)));
     } else {
       this.controller.init([
         { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
@@ -340,8 +358,7 @@ export default class Editor extends Vue {
 
   private save(saveDialogForm: SaveDialogForm): void {
     console.log('Saving recording...');
-    let recorder = this.container!.getContainer().resolve<RecordController>(RecordController);
-    const log = JSON.stringify(recorder.getEventLog());
+    const log = JSON.stringify(this.controller!.export());
     console.log(log);
     this.$auth
       .query(
