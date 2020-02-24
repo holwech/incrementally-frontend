@@ -47,7 +47,9 @@
               </v-card-title>
               <v-card-text>{{ entry.description }}</v-card-text>
               <v-card-actions>
-                <router-link :to="{ name: 'EditorWithLoad', params: { id: entry.id } }">
+                <router-link
+                  :to="{ name: 'EditorWithLoad', params: { id: entry.id } }"
+                >
                   <v-btn text color="blue">Open</v-btn>
                 </router-link>
                 <v-btn text color="blue">Delete</v-btn>
@@ -64,7 +66,6 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import LoginButton from '@/components/LoginButton.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
-import RecordingMetadata from '@/models/RecordingMetadata';
 
 interface RecordingMetadata {
   createdBy: string;
@@ -81,18 +82,23 @@ interface RecordingMetadata {
     Toolbar
   }
 })
-
 export default class MainMenu extends Vue {
   private entries = Array<RecordingMetadata>();
 
   private mounted(): void {
     this.$auth
-      .query(process.env.VUE_APP_URL + '/api/metadata', {
-        scopes: [
-          process.env.VUE_APP_SCOPE_WRITE,
-          process.env.VUE_APP_SCOPE_READ
-        ]
-      }, 'GET', null, false)
+      .query(
+        process.env.VUE_APP_URL + '/api/metadata',
+        {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        },
+        'GET',
+        null,
+        false
+      )
       .then(res => res.json())
       .then(json => (this.entries = json));
   }
