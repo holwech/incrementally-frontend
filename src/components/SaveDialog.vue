@@ -1,11 +1,14 @@
 <template>
   <div>
-    <v-btn color="white" class="ml-1" tile outlined @click="dialog = true">
-      <span> Save </span>
-    </v-btn>
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
       <v-card>
-        <v-card-title class="headline" primary-title>
+        <v-card-title
+          class="headline"
+          primary-title
+        >
           Save
         </v-card-title>
         <v-card-text>
@@ -35,10 +38,25 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="primary" text :disabled="disableSave" @click="save">
+          <v-progress-circular
+            v-if="RecordStore.loading"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+          <v-btn
+            v-else
+            color="primary"
+            text
+            :disabled="disableSave"
+            @click="save"
+          >
             Save
           </v-btn>
-          <v-btn color="primary" text @click="dialog = false">
+          <v-btn
+            color="primary"
+            text
+            @click="close"
+          >
             Close
           </v-btn>
         </v-card-actions>
@@ -49,27 +67,32 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { SaveDialogForm } from '@/models/SaveDialogForm';
+import { RecordStore } from '@/store/RecordStore';
+import { IAction } from 'drawify/lib/Interfaces/ActionInterfaces';
 
-export interface SaveDialogFormElement {
+interface SaveDialogFormElement {
   value: string;
   rules: Array<(v: string) => any>;
 }
 
-export interface SaveDialogForm {
+interface SaveDialogFormTemplate {
   title: SaveDialogFormElement;
   description: SaveDialogFormElement;
 }
 
 @Component
 export default class SaveDialog extends Vue {
+  @Prop(Boolean) private readonly dialog = false;
+
+  private RecordStore = RecordStore;
   private disableSave = true;
-  private dialog = false;
   private rules = {
     required: (v: string) => !!v || 'Required.',
     min: (v: string) => v.length >= 4 || 'Min 4 characters',
     emailMatch: () => 'The email and password you entered do not match'
   };
-  private form: SaveDialogForm = {
+  private form: SaveDialogFormTemplate = {
     title: {
       value: '',
       rules: [this.rules.required, this.rules.min]
@@ -79,11 +102,6 @@ export default class SaveDialog extends Vue {
       rules: [this.rules.required, this.rules.min]
     }
   };
-
-  @Watch('dialog')
-  private emitDialogOpen() {
-    this.$emit('onDialogOpen', this.dialog);
-  }
 
   @Watch('form', { deep: true })
   private verify(): void {
@@ -98,9 +116,25 @@ export default class SaveDialog extends Vue {
     this.disableSave = false;
   }
 
+  @Watch('RecordStore.loading')
+  private closeOnLoadingDone() {
+    if (!this.RecordStore.loading) {
+      this.close();
+    }
+  }
+
+  private close(): void {
+    this.$emit('close');
+  }
+
   private save(): void {
-    this.dialog = false;
-    this.$emit('save', this.form);
+    RecordStore.Save({
+      auth: this.$auth,
+      formData: {
+        title: this.form.title.value,
+        description: this.form.description.value
+      }
+    });
   }
 }
 </script>

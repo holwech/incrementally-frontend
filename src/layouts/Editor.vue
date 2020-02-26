@@ -55,7 +55,10 @@
         <v-btn v-else color="white" tile depressed @click="controller.start()">
           <v-icon color="black">play_arrow</v-icon>
         </v-btn>
-        <SaveDialog @save="save" @onDialogOpen="saveDialogOpen"></SaveDialog>
+        <v-btn color="white" class="ml-1" tile outlined @click="save">
+          <span> Save </span>
+        </v-btn>
+        <SaveDialog :dialog="dialog" @close="dialog = false"></SaveDialog>
         <!-- <v-toolbar-items class="hidden-sm-and-down">
           <v-select
             item-text="text"
@@ -144,19 +147,23 @@ import 'reflect-metadata';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SettingsDialog from '@/components/SettingsDialog.vue';
 import HelpDialog from '@/components/HelpDialog.vue';
-import SaveDialog, { SaveDialogForm } from '@/components/SaveDialog.vue';
+import SaveDialog from '@/components/SaveDialog.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
 import LoginButton from '@/components/LoginButton.vue';
 import Service from 'drawify/lib/Controllers/Service';
 import AppState from 'drawify/lib/State/AppState';
 import ServiceBuilder from 'drawify';
-import { StrokeAttributes } from 'drawify/lib/Interfaces/ActionInterfaces';
+import {
+  StrokeAttributes,
+  IAction
+} from 'drawify/lib/Interfaces/ActionInterfaces';
 import { AppStates } from 'drawify/lib/Interfaces/AppInterfaces';
 import { RecordController } from 'drawify/lib/Controllers/RecordController';
 import Timer from 'drawify/lib/Timer/Timer';
 import { PlayBaseController } from 'drawify/lib/Controllers/PlayBaseController';
 import RecordingMetadata from '../models/RecordingMetadata';
 import IRecordingEntry from '@/models/RecordingEntry';
+import { RecordStore } from '@/store/RecordStore';
 
 @Component({
   components: {
@@ -178,6 +185,7 @@ export default class Editor extends Vue {
     surname: '',
     title: ''
   };
+  private RecordStore = RecordStore;
   private state = new AppState();
   private drawer = false;
   private container?: ServiceBuilder;
@@ -190,6 +198,7 @@ export default class Editor extends Vue {
   private recording = false;
   private playing = false;
   private saveDialog = false;
+  private recordingData: IAction[] = [];
   private msg: string = 'Drawing board';
   private smoothness = { text: '4 - Sharp curves', value: 4 };
   private slider = 0;
@@ -290,7 +299,9 @@ export default class Editor extends Vue {
               process.env.VUE_APP_SCOPE_READ
             ]
           },
-          'GET'
+          'GET',
+          null,
+          false
         )
         .then(res => {
           this.loading = true;
@@ -347,41 +358,11 @@ export default class Editor extends Vue {
 
   get isPlaying(): boolean {
     return this.state.state === AppStates.START;
-    // if (this.state.state === AppStates.PLAYING) {
-    //   this.playing = false;
-    //   this.controller.pause();
-    // } else {
-    //   this.playing = true;
-    //   this.controller.start();
-    // }
   }
 
-  private save(saveDialogForm: SaveDialogForm): void {
-    console.log('Saving recording...');
-    const log = JSON.stringify(this.controller!.export());
-    console.log(log);
-    this.$auth
-      .query(
-        process.env.VUE_APP_URL + '/api/create',
-        {
-          scopes: [
-            process.env.VUE_APP_SCOPE_WRITE,
-            process.env.VUE_APP_SCOPE_READ
-          ]
-        },
-        'POST',
-        {
-          Recording: log,
-          Title: saveDialogForm.title.value,
-          Description: saveDialogForm.description.value
-        }
-      )
-      .then(res => console.log(res));
-    console.log(
-      'Storing ' +
-        String((encodeURI(log).split(/%..|./).length - 1) / 1000000) +
-        ' MB'
-    );
+  private save(): void {
+    RecordStore.SetRecording(this.controller!.export());
+    this.dialog = true;
   }
 
   private printAccessToken(): void {
