@@ -6,8 +6,18 @@ import { SaveDialogForm } from '@/models/SaveDialogForm';
 @Module({ generateMutationSetters: true })
 class RecordStoreModule extends VuexModule {
   public loading: boolean = false;
+  public loadingMetadata = false;
+  public loadingRecording = false;
   public recording: IAction[] = [];
-  public error: string = "";
+  public recordingMetadata: RecordingMetadata = {
+    createdBy: '',
+    description: '',
+    givenName: '',
+    id: '',
+    surname: '',
+    title: ''
+  };
+  public error: string = '';
 
   @Mutation
   public SetRecording(recording: IAction[]) {
@@ -48,7 +58,52 @@ class RecordStoreModule extends VuexModule {
         this.loading = false;
       });
   }
+
+  @Action
+  public async LoadMetadata(args: { id: string, auth: Auth }) {
+    console.log('Loading metadata');
+    this.loadingMetadata = true;
+    let res = await args.auth
+      .query(
+        process.env.VUE_APP_URL + `/api/metadata/${args.id}`,
+        {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        },
+        'GET',
+        null,
+        false
+      );
+    let json = await res.json();
+    this.recordingMetadata = json[0];
+    this.loadingMetadata = false;
+  }
+
+  @Action
+  public async LoadRecording(args: { id: string, auth: Auth }) {
+    console.log('Loading recordings');
+    this.loadingRecording = true;
+    let res = await args.auth
+      .query(
+        process.env.VUE_APP_URL + `/api/recording/${args.id}`,
+        {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        },
+        'GET',
+        null,
+        false
+      );
+    let json = await res.json();
+    this.recording = JSON.parse(json[0].recording);
+    this.loadingRecording = false;
+  }
 }
 
 import store from './store';
+import RecordingMetadata from '@/models/RecordingMetadata';
 export const RecordStore = new RecordStoreModule({ store, name: "RecordStore" });

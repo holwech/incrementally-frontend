@@ -27,9 +27,9 @@
         </v-navigation-drawer> -->
       <Toolbar :show-collapse-button="true">
         <v-toolbar-title>
-          {{ recordingMetadata.title }}
+          {{ RecordStore.recordingMetadata.title }}
           <v-progress-circular
-            v-if="loading"
+            v-if="!RecordStore.loadingRecording || !RecordStore.loadingMetadata"
             indeterminate
             color="white"
           ></v-progress-circular>
@@ -177,14 +177,6 @@ import { RecordStore } from '@/store/RecordStore';
 export default class Editor extends Vue {
   @Prop(String) readonly id?: string;
 
-  private recordingMetadata: RecordingMetadata = {
-    createdBy: '',
-    description: '',
-    givenName: '',
-    id: '',
-    surname: '',
-    title: ''
-  };
   private RecordStore = RecordStore;
   private state = new AppState();
   private drawer = false;
@@ -198,7 +190,7 @@ export default class Editor extends Vue {
   private recording = false;
   private playing = false;
   private saveDialog = false;
-  private recordingData: IAction[] = [];
+  private recordingData: IAction[] = RecordStore.recording;
   private msg: string = 'Drawing board';
   private smoothness = { text: '4 - Sharp curves', value: 4 };
   private slider = 0;
@@ -263,55 +255,23 @@ export default class Editor extends Vue {
     }
   }
 
-  private mounted(): void {
+  private async mounted() {
     this.container = new ServiceBuilder();
     this.controller = this.container.build(
       document.getElementById('svg')!,
       this.state,
       this.timer
     );
-    let player = this.container
-      .getContainer()
-      .resolve<PlayBaseController>(PlayBaseController);
     if (this.id) {
-      console.log('Loading video');
-      this.$auth
-        .query(
-          process.env.VUE_APP_URL + `/api/metadata/${this.id}`,
-          {
-            scopes: [
-              process.env.VUE_APP_SCOPE_WRITE,
-              process.env.VUE_APP_SCOPE_READ
-            ]
-          },
-          'GET',
-          null,
-          false
-        )
-        .then(res => res.json())
-        .then(json => (this.recordingMetadata = json[0]));
-      this.$auth
-        .query(
-          process.env.VUE_APP_URL + `/api/recording/${this.id}`,
-          {
-            scopes: [
-              process.env.VUE_APP_SCOPE_WRITE,
-              process.env.VUE_APP_SCOPE_READ
-            ]
-          },
-          'GET',
-          null,
-          false
-        )
-        .then(res => {
-          this.loading = true;
-          return res.json();
-        })
-        .then((json: IRecordingEntry[]) =>
-          player.setEventLog(JSON.parse(json[0].recording))
-        )
-        .then(() => (this.loading = false));
-      //.then(json => console.log(JSON.parse(json[0].recording)));
+      let player = this.container
+        .getContainer()
+        .resolve<PlayBaseController>(PlayBaseController);
+      await Promise.all([
+        RecordStore.LoadMetadata({ id: this.id, auth: this.$auth }),
+        RecordStore.LoadRecording({ id: this.id, auth: this.$auth })
+      ]);
+      console.log(RecordStore.recording);
+      player.setEventLog(RecordStore.recording);
     } else {
       this.controller.init([
         { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
