@@ -356,5 +356,6 @@ a {
 
 #svg {
   border: 0px solid black;
+  touch-action: none;
 }
 </style>
