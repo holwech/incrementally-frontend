@@ -1,12 +1,12 @@
 // user-module.ts
-import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
+import { VuexModule, Module, Mutation, Action } from 'vuex-class-modules';
 import Auth from '@/utils/Auth';
 
 @Module({ generateMutationSetters: true })
 class UserStore extends VuexModule {
   // state
   public loggedIn = false;
-  public username = "Unknown";
+  public username = 'Unknown';
   
   @Action
   public async login(auth: Auth) {
@@ -15,7 +15,7 @@ class UserStore extends VuexModule {
       this.loggedIn = true;    
       this.username = auth.account!.idTokenClaims.given_name;
     } catch(e) {
-      if (process.env.NODE_ENV == "development") {
+      if (process.env.NODE_ENV == 'development') {
         console.error(e);
         this.loggedIn = false;
       }
@@ -34,5 +34,5 @@ class UserStore extends VuexModule {
 }
 
 // register module (could be in any file)
-import store from "./store";
-export const userStore = new UserStore({ store, name: "user" });
+import store from './store';
+export const userStore = new UserStore({ store, name: 'user' });

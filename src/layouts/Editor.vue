@@ -32,10 +32,13 @@
             v-if="loading"
             indeterminate
             color="white"
-          ></v-progress-circular>
+          />
         </v-toolbar-title>
-        <v-btn text @click="printAccessToken"
-          >{{
+        <v-btn
+          text
+          @click="printAccessToken"
+        >
+          {{
             timer.timeMonitor.minutes +
               ':' +
               timer.timeMonitor.seconds +
@@ -45,17 +48,41 @@
               timer.timeMonitor.lengthSeconds
           }}
         </v-btn>
-        <v-btn depressed tile text @click="controller.restart()">
+        <v-btn
+          depressed
+          tile
+          text
+          @click="controller.restart()"
+        >
           <v-icon>replay</v-icon>
         </v-btn>
         <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
-        <v-btn v-if="isPlaying" tile depressed text @click="controller.pause()"
-          ><v-icon color="red">fiber_manual_record</v-icon></v-btn
+        <v-btn
+          v-if="isPlaying"
+          tile
+          depressed
+          text
+          @click="controller.pause()"
         >
-        <v-btn v-else color="white" tile depressed @click="controller.start()"
-          ><v-icon color="black">play_arrow</v-icon></v-btn
+          <v-icon color="red">
+            fiber_manual_record
+          </v-icon>
+        </v-btn>
+        <v-btn
+          v-else
+          color="white"
+          tile
+          depressed
+          @click="controller.start()"
         >
-        <SaveDialog @save="save" @onDialogOpen="saveDialogOpen"></SaveDialog>
+          <v-icon color="black">
+            play_arrow
+          </v-icon>
+        </v-btn>
+        <SaveDialog
+          @save="save"
+          @onDialogOpen="saveDialogOpen"
+        />
         <!-- <v-toolbar-items class="hidden-sm-and-down">
           <v-select
             item-text="text"
@@ -78,7 +105,7 @@
             return-object
             color="black"
             @input="setStrokeProperties('stroke')"
-          ></v-select>
+          />
           <v-select
             v-model="width"
             item-text="text"
@@ -88,7 +115,7 @@
             return-object
             color="black"
             @input="setStrokeProperties('stroke-width')"
-          ></v-select>
+          />
           <v-select
             v-model="fillColor"
             item-text="text"
@@ -98,22 +125,25 @@
             return-object
             color="black"
             @input="setStrokeProperties('fill')"
-          ></v-select>
+          />
           <v-checkbox
             v-model="fill"
             label="Fill"
             @change="setStrokeProperties('fill')"
-          ></v-checkbox>
+          />
         </SettingsDialog>
         <HelpDialog>
           <v-flex>
             <v-list>
-              <v-list-tile v-for="text in helpText" :key="text">
+              <v-list-tile
+                v-for="text in helpText"
+                :key="text"
+              >
                 <v-list-tile-action>
                   <v-icon>star</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                  <v-list-tile-title v-text="text"></v-list-tile-title>
+                  <v-list-tile-title v-text="text" />
                 </v-list-tile-content>
               </v-list-tile>
             </v-list>
@@ -121,16 +151,30 @@
         </HelpDialog>
         <LoginButton />
       </Toolbar>
-      <v-content ma-0 pa-0 style="padding: 0px">
-        <v-container fluid fill-height ma-0 pa-0>
-          <v-layout justify-center align-center row wrap>
+      <v-content
+        ma-0
+        pa-0
+        style="padding: 0px"
+      >
+        <v-container
+          fluid
+          fill-height
+          ma-0
+          pa-0
+        >
+          <v-layout
+            justify-center
+            align-center
+            row
+            wrap
+          >
             <v-flex text-xs-center>
               <svg
                 id="svg"
                 xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink"
                 version="1.1"
-              ></svg>
+              />
             </v-flex>
           </v-layout>
         </v-container>
@@ -140,7 +184,7 @@
 </template>
 
 <script lang="ts">
-import "reflect-metadata";
+import 'reflect-metadata';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import SettingsDialog from '@/components/SettingsDialog.vue';
 import HelpDialog from '@/components/HelpDialog.vue';
@@ -259,7 +303,7 @@ export default class Editor extends Vue {
     this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
     let player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
     if (this.id) {
-      console.log("Loading video")
+      console.log('Loading video');
       this.$auth
         .query(process.env.VUE_APP_URL + `/api/metadata/${this.id}`, {
           scopes: [
@@ -278,7 +322,7 @@ export default class Editor extends Vue {
         }, 'GET')
         .then(res => {
           this.loading = true;
-          return res.json()
+          return res.json();
         })
         .then((json: IRecordingEntry[]) => player.setEventLog(JSON.parse(json[0].recording)))
         .then(() => this.loading = false);
@@ -380,23 +424,5 @@ export default class Editor extends Vue {
 }
 </script>
 
-<style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-
-#svg {
-  border: 0px solid black;
-}
+<style >
 </style>

@@ -1,64 +1,35 @@
 <template>
-  <div>
-    <v-app id="inspire">
-      <Toolbar>
-        <router-link :to="{ name: 'Editor' }">
-          <v-btn outlined tile>Open editor</v-btn>
-        </router-link>
-        <LoginButton />
-      </Toolbar>
-      <v-container fluid grid-list-xl>
-        <v-row v-if="entries.length === 0">
-          <v-col cols="12">
-            <v-row
-              justify="center"
-              class="grey lighten-5"
-              style="height: 300px;"
-            >
-              <v-card outlined tile class="worker">
-                👨‍🔧
-                <br />
-                <v-progress-circular
-                  indeterminate
-                  color="primary"
-                ></v-progress-circular>
-              </v-card>
-            </v-row>
-          </v-col>
-        </v-row>
-        <v-layout v-else row wrap justify-center grid-list-xl>
-          <v-flex v-for="entry in entries" :key="entry.id" md3>
-            <v-card color="grey darken-3" dark>
-              <!-- <svg
-                id="svg"
-                class="svg-predisplay"
-                xmlns="http://www.w3.org/2000/svg"
-                xmlns:xlink="http://www.w3.org/1999/xlink"
-                version="1.1"
-                enable-background="new 0 0 1200 800"
-                xml:space="preserve"
-              ></svg> -->
-              <p class="worker">👨‍🔧<br /></p>
-              <p class="work-in-progress">Work in progress</p>
-              <v-card-title primary-title>
-                <div>
-                  <h3 class="headline mb-0">{{ entry.title }}</h3>
-                </div>
-              </v-card-title>
-              <v-card-text>{{ entry.description }}</v-card-text>
-              <v-card-actions>
-                <router-link
-                  :to="{ name: 'EditorWithLoad', params: { id: entry.id } }"
-                >
-                  <v-btn text color="blue">Open</v-btn>
-                </router-link>
-                <v-btn text color="blue">Delete</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
-    </v-app>
+  <div id="main-wrapper">
+    <Toolbar>
+      <router-link :to="{ name: 'Editor' }">
+        <b-btn variant="outline-light">Open editor</b-btn>
+      </router-link>
+      <LoginButton />
+    </Toolbar>
+    <b-container id="main-container">
+      <b-row>
+        <b-col align-self="center" class="splash-text">
+          <h1 class="text-center">Learning redefined.</h1>
+          <p class="text-center">The new way to create educational content</p>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <b-card
+            class="svg-card"
+          >
+            <template slot="header">
+              Try it out yourself - 
+              <b-button variant="outline-dark">
+                <i class="material-icons">fiber_manual_record</i>
+              </b-button>
+            </template>
+            <Board></Board>
+          </b-card>
+        </b-col>
+      </b-row>
+    </b-container>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#007bff" fill-opacity="1" d="M0,224L60,234.7C120,245,240,267,360,256C480,245,600,203,720,208C840,213,960,267,1080,288C1200,309,1320,299,1380,293.3L1440,288L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"></path></svg> 
   </div>
 </template>
 
@@ -66,6 +37,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import LoginButton from '@/components/LoginButton.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
+import Board from '@/components/Board.vue';
 
 interface RecordingMetadata {
   createdBy: string;
@@ -79,13 +51,15 @@ interface RecordingMetadata {
 @Component({
   components: {
     LoginButton,
-    Toolbar
+    Toolbar,
+    Board
   }
 })
 export default class MainMenu extends Vue {
   private entries = Array<RecordingMetadata>();
 
   private mounted(): void {
+    this.$emit('test');
     this.$auth
       .query(
         process.env.VUE_APP_URL + '/api/metadata',
@@ -105,7 +79,7 @@ export default class MainMenu extends Vue {
 }
 </script>
 
-<style>
+<style lang='scss'>
 .no-link-style a {
   color: white;
   text-decoration: none; /* no underline */
@@ -115,13 +89,32 @@ export default class MainMenu extends Vue {
   width: 100%;
 }
 
-.worker {
-  font-size: 100px;
-  text-align: center;
-  width: 400px;
+#main-container {
+  padding: 30px;
 }
 
-.work-in-progress {
-  text-align: center;
+#main-wrapper {
+  background-image: url('../assets/wave.svg');
+  background-repeat: no-repeat;
+}
+
+#main-wrapper > svg {
+  display: block;
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+}
+
+.splash-text {
+  margin: 50px;
+  h1 {
+    font-size: 5rem;
+    text-shadow: 2px 2px #ffffff;
+  }
+  p {
+    font-size: 1.5rem;
+  }
 }
 </style>

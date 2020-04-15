@@ -1,11 +1,23 @@
 <template>
   <div>
-    <v-btn color="white" class="ml-1" tile outlined @click="dialog = true">
+    <v-btn
+      color="white"
+      class="ml-1"
+      tile
+      outlined
+      @click="dialog = true"
+    >
       <span> Save </span>
     </v-btn>
-    <v-dialog v-model="dialog" width="500">
+    <v-dialog
+      v-model="dialog"
+      width="500"
+    >
       <v-card>
-        <v-card-title class="headline" primary-title>
+        <v-card-title
+          class="headline"
+          primary-title
+        >
           Save
         </v-card-title>
         <v-card-text>
@@ -17,28 +29,37 @@
                     v-model="form.title.value"
                     label="Title"
                     :rules="form.title.rules"
-                  ></v-text-field>
+                  />
                 </v-row>
                 <v-row>
                   <v-textarea
                     v-model="form.description.value"
                     label="Description"
                     :rules="form.description.rules"
-                  ></v-textarea>
+                  />
                 </v-row>
               </v-col>
             </v-layout>
           </v-container>
         </v-card-text>
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text :disabled="disableSave" @click="save">
+          <v-spacer />
+          <v-btn
+            color="primary"
+            text
+            :disabled="disableSave"
+            @click="save"
+          >
             Save
           </v-btn>
-          <v-btn color="primary" text @click="dialog = false">
+          <v-btn
+            color="primary"
+            text
+            @click="dialog = false"
+          >
             Close
           </v-btn>
         </v-card-actions>
