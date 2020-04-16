@@ -57,7 +57,6 @@
           <v-icon>replay</v-icon>
         </v-btn>
         <!-- <v-btn color="white" @click="controller.reverse()"><v-icon color="black">fast_rewind</v-icon></v-btn> -->
-<<<<<<< HEAD
         <v-btn v-if="isPlaying" tile depressed text @click="controller.pause()">
           <v-icon color="red">fiber_manual_record</v-icon>
         </v-btn>
@@ -68,34 +67,6 @@
           <span> Save </span>
         </v-btn>
         <SaveDialog :dialog="dialog" @close="dialog = false"></SaveDialog>
-=======
-        <v-btn
-          v-if="isPlaying"
-          tile
-          depressed
-          text
-          @click="controller.pause()"
-        >
-          <v-icon color="red">
-            fiber_manual_record
-          </v-icon>
-        </v-btn>
-        <v-btn
-          v-else
-          color="white"
-          tile
-          depressed
-          @click="controller.start()"
-        >
-          <v-icon color="black">
-            play_arrow
-          </v-icon>
-        </v-btn>
-        <SaveDialog
-          @save="save"
-          @onDialogOpen="saveDialogOpen"
-        />
->>>>>>> dev
         <!-- <v-toolbar-items class="hidden-sm-and-down">
           <v-select
             item-text="text"
@@ -317,7 +288,6 @@ export default class Editor extends Vue {
       this.timer
     );
     if (this.id) {
-<<<<<<< HEAD
       let player = this.container
         .getContainer()
         .resolve<PlayBaseController>(PlayBaseController);
@@ -327,32 +297,6 @@ export default class Editor extends Vue {
       ]);
       console.log(RecordStore.recording);
       player.setEventLog(RecordStore.recording);
-=======
-      console.log('Loading video');
-      this.$auth
-        .query(process.env.VUE_APP_URL + `/api/metadata/${this.id}`, {
-          scopes: [
-            process.env.VUE_APP_SCOPE_WRITE,
-            process.env.VUE_APP_SCOPE_READ
-          ]
-        }, 'GET', null, false)
-        .then(res => res.json())
-        .then(json =>  this.recordingMetadata = json[0]);
-      this.$auth
-        .query(process.env.VUE_APP_URL + `/api/recording/${this.id}`, {
-          scopes: [
-            process.env.VUE_APP_SCOPE_WRITE,
-            process.env.VUE_APP_SCOPE_READ
-          ]
-        }, 'GET')
-        .then(res => {
-          this.loading = true;
-          return res.json();
-        })
-        .then((json: IRecordingEntry[]) => player.setEventLog(JSON.parse(json[0].recording)))
-        .then(() => this.loading = false);
-        //.then(json => console.log(JSON.parse(json[0].recording)));
->>>>>>> dev
     } else {
       this.controller.init([
         { targetAttr: StrokeAttributes.COLOR, value: this.color.value },
@@ -419,7 +363,6 @@ export default class Editor extends Vue {
 }
 </script>
 
-<<<<<<< HEAD
 <style scoped>
 h3 {
   margin: 40px 0 0;
@@ -440,7 +383,4 @@ a {
   border: 0px solid black;
   touch-action: none;
 }
-=======
-<style >
->>>>>>> dev
 </style>
