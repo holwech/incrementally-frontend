@@ -1,28 +1,27 @@
 <template>
-  <!-- <v-btn class="success" @click="login">{{ loginText }}</v-btn> -->
-  <div class="text-xs-center">
-    <v-menu offset-y>
-      <template v-slot:activator="{ on }">
-        <v-btn color="white" class="ml-1" tile outlined v-on="on">
-          <span> {{ user.loggedIn ? 'Profile' : 'Login' }} </span>
-        </v-btn>
-      </template>
-      <v-list flat tile>
-        <v-list-item v-if="user.loggedIn">
-          <v-list-item-title>{{ user.username }}</v-list-item-title>
-        </v-list-item>
-        <v-list-item v-if="user.loggedIn" @click="logout">
-          <v-list-item-title>Logout</v-list-item-title>
-        </v-list-item>
-        <v-list-item v-if="!user.loggedIn" @click="signup">
-          <v-list-item-title>Sign up</v-list-item-title>
-        </v-list-item>
-        <v-list-item v-if="!user.loggedIn" @click="login">
-          <v-list-item-title>Login</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
-  </div>
+  <b-dropdown text="Sign up" right variant="outline-light" style="padding-left:5px;">
+    <b-dropdown-item v-if="user.loggedIn">
+      {{ user.username }}
+    </b-dropdown-item>
+    <b-dropdown-item
+      v-if="user.loggedIn"
+      @click="logout"
+    >
+      Logout
+    </b-dropdown-item>
+    <b-dropdown-item
+      v-if="!user.loggedIn"
+      @click="signup"
+    >
+      Sign up
+    </b-dropdown-item>
+    <b-dropdown-item
+      v-if="!user.loggedIn"
+      @click="login"
+    >
+      Login
+    </b-dropdown-item>
+  </b-dropdown>
 </template>
 
 <script lang="ts">

@@ -1,27 +1,42 @@
 <template>
-  <v-app-bar color="grey darken-3" dark fixed app :collapse="collapseToolbar">
-    <v-layout v-if="!collapseToolbar">
-      <v-toolbar-title class="no-link-style">
-        <router-link style="color:white" :to="{ name: 'MainMenu' }">
-          Incrementally
-        </router-link>
-        <sup>
-          <span style="color:yellow" @click="betaText">beta</span>
-        </sup>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
+  <b-navbar
+    toggleable="lg"
+    type="dark"
+    variant="primary"
+  >
+    <b-navbar-brand href="#">
+      <router-link
+        style="color:white"
+        :to="{ name: 'MainMenu' }"
+      >
+        incrementally
+      </router-link>
+      <sup>
+        <span
+          style="color:yellow"
+          @click="betaText"
+        >beta</span>
+      </sup>
+    </b-navbar-brand>
+
+    <b-navbar-toggle target="nav-collapse" />
+
+    <b-collapse
+      id="nav-collapse"
+      is-nav
+    >
+      <b-navbar-nav class="ml-auto">
         <slot></slot>
-      </v-toolbar-items>
-    </v-layout>
-    <v-icon
+      </b-navbar-nav>
+    </b-collapse>
+    <b-icon
       v-if="showCollapseButton"
       @click="collapseToolbar = !collapseToolbar"
       >{{
         collapseToolbar ? 'keyboard_arrow_right' : 'keyboard_arrow_left'
-      }}</v-icon
+      }}</b-icon>
     >
-  </v-app-bar>
+  </b-navbar>
 </template>
 
 <script lang="ts">

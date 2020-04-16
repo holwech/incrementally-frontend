@@ -1,5 +1,17 @@
 <template>
   <div>
+<<<<<<< HEAD
+=======
+    <v-btn
+      color="white"
+      class="ml-1"
+      tile
+      outlined
+      @click="dialog = true"
+    >
+      <span> Save </span>
+    </v-btn>
+>>>>>>> dev
     <v-dialog
       v-model="dialog"
       width="500"
@@ -20,23 +32,24 @@
                     v-model="form.title.value"
                     label="Title"
                     :rules="form.title.rules"
-                  ></v-text-field>
+                  />
                 </v-row>
                 <v-row>
                   <v-textarea
                     v-model="form.description.value"
                     label="Description"
                     :rules="form.description.rules"
-                  ></v-textarea>
+                  />
                 </v-row>
               </v-col>
             </v-layout>
           </v-container>
         </v-card-text>
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <v-card-actions>
+<<<<<<< HEAD
           <v-spacer></v-spacer>
           <v-progress-circular
             v-if="RecordStore.loading"
@@ -45,6 +58,10 @@
           ></v-progress-circular>
           <v-btn
             v-else
+=======
+          <v-spacer />
+          <v-btn
+>>>>>>> dev
             color="primary"
             text
             :disabled="disableSave"
@@ -55,7 +72,11 @@
           <v-btn
             color="primary"
             text
+<<<<<<< HEAD
             @click="close"
+=======
+            @click="dialog = false"
+>>>>>>> dev
           >
             Close
           </v-btn>

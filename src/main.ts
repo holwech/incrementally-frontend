@@ -1,12 +1,16 @@
 import Vue from 'vue';
 import router from './router';
-import vuetify from './plugins/vuetify';
 import App from './App.vue';
 import store from './store/store';
 import Auth, { IUserFlows } from './utils/Auth';
 import { Configuration } from 'msal';
 import VueRouter from 'vue-router';
 import './registerServiceWorker';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
+import '@/assets/style/main.scss';
+
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
 
 Vue.config.productionTip = false;
 
@@ -40,6 +44,5 @@ Vue.use(VueRouter);
 new Vue({
   router,
   store,
-  vuetify,
   render: h => h(App)
 }).$mount('#app');
