@@ -35,7 +35,6 @@
       >{{
         collapseToolbar ? 'keyboard_arrow_right' : 'keyboard_arrow_left'
       }}</b-icon>
-    >
   </b-navbar>
 </template>
 

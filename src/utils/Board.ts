@@ -6,7 +6,7 @@ import { PlayBaseController } from 'drawify/lib/Controllers/PlayBaseController';
 import { StrokeAttributes } from 'drawify/lib/Interfaces/ActionInterfaces';
 import { AppStates } from 'drawify/lib/Interfaces/AppInterfaces';
 
-export class Board {
+export default class Board {
   private state = new AppState();
   private container?: ServiceBuilder;
   private timer = new Timer();
@@ -16,10 +16,12 @@ export class Board {
   public panMode: string = 'off';
 
   public create(parentId: string) {
+    const modifier = '_drawify';
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    document.getElementById(parentId)?.appendChild(svg);
+    svg.setAttribute('id', parentId + modifier);
+    document.getElementById(parentId)!.appendChild(svg);
     this.container = new ServiceBuilder();
-    this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
+    this.controller = this.container.build(svg as any, this.state, this.timer);
     this.player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
     this.controller.init([
       { targetAttr: StrokeAttributes.COLOR, value: 'black' },
