@@ -1,5 +1,10 @@
 <template>
-  <b-dropdown text="Sign up" right variant="outline-light" style="padding-left:5px;">
+  <b-dropdown
+    text="Sign up"
+    right
+    variant="outline-light"
+    style="padding-left:5px;"
+  >
     <b-dropdown-item v-if="user.loggedIn">
       {{ user.username }}
     </b-dropdown-item>

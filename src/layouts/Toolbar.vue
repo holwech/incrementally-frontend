@@ -26,15 +26,17 @@
       is-nav
     >
       <b-navbar-nav class="ml-auto">
-        <slot></slot>
+        <slot />
       </b-navbar-nav>
     </b-collapse>
     <b-icon
       v-if="showCollapseButton"
       @click="collapseToolbar = !collapseToolbar"
-      >{{
+    >
+      {{
         collapseToolbar ? 'keyboard_arrow_right' : 'keyboard_arrow_left'
-      }}</b-icon>
+      }}
+    </b-icon>
   </b-navbar>
 </template>
 

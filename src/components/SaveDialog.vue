@@ -46,12 +46,12 @@
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-progress-circular
             v-if="RecordStore.loading"
             indeterminate
             color="primary"
-          ></v-progress-circular>
+          />
           <v-btn
             v-else
             color="primary"

@@ -17,7 +17,7 @@ export default class Board {
 
   public create(parentId: string) {
     const modifier = '_drawify';
-    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.setAttribute('id', parentId + modifier);
     document.getElementById(parentId)!.appendChild(svg);
     this.container = new ServiceBuilder();

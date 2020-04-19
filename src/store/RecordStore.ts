@@ -106,4 +106,4 @@ class RecordStoreModule extends VuexModule {
 
 import store from './store';
 import RecordingMetadata from '@/models/RecordingMetadata';
-export const RecordStore = new RecordStoreModule({ store, name: "RecordStore" });
+export const RecordStore = new RecordStoreModule({ store, name: 'RecordStore' });

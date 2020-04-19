@@ -5,4 +5,4 @@ export default interface RecordingMetadata {
   id: string;
   surname: string;
   title: string;
-}
+};
