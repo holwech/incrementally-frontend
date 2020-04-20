@@ -28,13 +28,17 @@ export default class Board {
       { targetAttr: StrokeAttributes.WIDTH, value: 2 },
       {
         targetAttr: StrokeAttributes.BUFFER_SIZE,
-        value: 4
+        value: 1
       },
       { targetAttr: StrokeAttributes.FILL, value: false }
     ]);
     window.addEventListener('keydown', this.panOn);
     window.addEventListener('keyup', this.panOff);
     window.addEventListener('keydown', this.playToggle);
+  }
+
+  public setStrokeAttribute(targetAttr: StrokeAttributes, value: string | number | boolean) {
+    this.controller!.setStrokeProperties({ targetAttr: targetAttr, value });
   }
 
   private playToggle(e: KeyboardEvent): void {
@@ -67,12 +71,5 @@ export default class Board {
 
   get isPlaying(): boolean {
     return this.state.state === AppStates.START;
-    // if (this.state.state === AppStates.PLAYING) {
-    //   this.playing = false;
-    //   this.controller.pause();
-    // } else {
-    //   this.playing = true;
-    //   this.controller.start();
-    // }
   }
 }

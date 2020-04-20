@@ -4,8 +4,15 @@
     class="wave-top"
   >
     <Toolbar>
-      <router-link :to="{ name: 'Editor' }">
+      <router-link :to="{ name: 'Explorer' }">
         <b-btn variant="outline-light">
+          Explore
+        </b-btn>
+      </router-link>
+      <router-link :to="{ name: 'Editor' }">
+        <b-btn variant="outline-light"
+          style="margin-left:5px;"
+        >
           Open editor
         </b-btn>
       </router-link>
@@ -18,7 +25,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Incremental.
+            Incremental
           </h1>
           <p class="text-center">
             Go back later, fix mistakes, and improve your content incrementally
@@ -81,7 +88,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Always sharp.
+            Always sharp
           </h1>
           <p class="text-center">
             Create content with infinite resolution using Scalable Vector Graphics
@@ -94,7 +101,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Interactive.
+            Interactive
           </h1>
           <p class="text-center">
             Let your students learn by doing
@@ -107,7 +114,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Learning redefined.
+            incrementally
           </h1>
           <p class="text-center">
             The new way to create educational content
@@ -156,53 +163,3 @@ export default class MainMenu extends Vue {
   }
 }
 </script>
-
-<style lang='scss'>
-.no-link-style a {
-  color: white;
-  text-decoration: none; /* no underline */
-}
-
-.svg-predisplay {
-  width: 100%;
-}
-
-#main-container {
-  padding: 30px;
-}
-
-.wave-top {
-  background-image: url('../assets/wave-top.svg');
-  background-repeat: no-repeat;
-}
-
-.wave-bottom {
-  background-image: url('../assets/wave-bottom.svg');
-  background-repeat: no-repeat;
-  background-size: 100%;
-}
-
-.svg {
-  width: 100%;
-  height: 100%;
-}
-
-.board-button {
-  margin-left: 20px;
-}
-
-.splash-text {
-  margin: 50px;
-  h1 {
-    font-size: 5rem;
-    text-shadow: 2px 2px #ffffff;
-  }
-  p {
-    font-size: 1.5rem;
-  }
-}
-
-.splash-text-last {
-  margin-bottom: 0px;
-}
-</style>

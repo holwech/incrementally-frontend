@@ -20,6 +20,7 @@
     </b-navbar-brand>
 
     <b-navbar-toggle target="nav-collapse" />
+    <slot name="main" />
 
     <b-collapse
       id="nav-collapse"

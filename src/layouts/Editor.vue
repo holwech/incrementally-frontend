@@ -3,8 +3,8 @@
     <Toolbar>
       <b-button
         v-if="board.isPlaying"
-        variant="light"
-        class="icon-button board-button"
+        variant="dark"
+        class="icon-button editor-button"
         style="color:red;"
         @click="board.controller.pause()"
       >
@@ -13,21 +13,21 @@
       <b-button
         v-else
         variant="light"
-        class="icon-button board-button"
+        class="icon-button editor-button"
         @click="board.controller.start()"
       >
         <span class="material-icons">play_arrow</span>
       </b-button>
       <b-button
         variant="light"
-        class="icon-button board-button"
+        class="icon-button editor-button"
         @click="board.controller.restart()"
       >
         <span class="material-icons">replay</span>
       </b-button>
       <b-button
         variant="light"
-        class="icon-button board-button"
+        class="icon-button editor-button"
       >
         {{
           board.timer.timeMonitor.minutes +
@@ -39,13 +39,33 @@
             board.timer.timeMonitor.lengthSeconds
         }}
       </b-button>
+      <b-button variant="light" class="editor-button" v-b-modal.modal-settings>Settings</b-button>
+      <b-modal id="modal-settings" title="Settings" ok-only>
+        <b-form-group
+          label="Smoothness"
+          description="Set how smooth the free hand drawing should be"
+          label-for="input-smoothness"
+        >
+          <b-form-select id="input-smoothness" v-model="smoothnessSelected" :options="smoothnessOptions"></b-form-select>
+        </b-form-group>
+        <b-form-group
+          label="Color"
+          description="Set the color"
+          label-for="input-color"
+        >
+          <b-form-select id="input-color" v-model="colorSelected" :options="colorOptions"></b-form-select>
+        </b-form-group>
+        <b-form-group
+          label="Strok width"
+          description="Set the stroke width"
+          label-for="input-stroke-width"
+        >
+          <b-form-select id="input-stroke-width" v-model="strokeWidthSelected" :options="strokeWidthOptions"></b-form-select>
+        </b-form-group>
+      </b-modal>
       <LoginButton />
     </Toolbar>
-    <b-container id="main-container">
-      <b-row>
-        <div id="board" />
-      </b-row>
-    </b-container>
+    <div id="board" />
   </div>
 </template>
 
@@ -84,6 +104,45 @@ import Board from '@/utils/Board';
 })
 export default class Editor extends Vue {
   private board = new Board();
+  private smoothnessOptions = [
+    { value: 1, text: 'None' },
+    { value: 2, text: 'Low' },
+    { value: 4, text: 'Normal' },
+    { value: 6, text: 'High' },
+    { value: 8, text: 'Very high' },
+  ];
+  private smoothnessSelected = this.smoothnessOptions[2].value;
+  private colorOptions = [
+    { value: 'black', text: 'Black' },
+    { value: 'blue', text: 'Blue' },
+    { value: 'red', text: 'Red' },
+    { value: 'green', text: 'Green' }
+  ];
+  private colorSelected = this.colorOptions[0].value;
+  private strokeWidthOptions = [
+    { value: 1, text: '1px' },
+    { value: 2, text: '2px' },
+    { value: 4, text: '4px' },
+    { value: 6, text: '6px' },
+    { value: 8, text: '8px' }
+  ];
+  private strokeWidthSelected = this.strokeWidthOptions[1].value;
+
+  @Watch('smoothnessSelected')
+  private setSmoothness(newVal: any, oldVal: any) {
+    console.log(newVal);
+    this.board.setStrokeAttribute(StrokeAttributes.BUFFER_SIZE, newVal);
+  }
+
+  @Watch('colorSelected')
+  private setColor(newVal: any, oldVal: any) {
+    this.board.setStrokeAttribute(StrokeAttributes.COLOR, newVal);
+  }
+
+  @Watch('strokeWidthSelected')
+  private setStrokeWidth(newVal: any, oldVal: any) {
+    this.board.setStrokeAttribute(StrokeAttributes.WIDTH, newVal);
+  }
 
   private mounted(): void {
     this.board.create('board');
