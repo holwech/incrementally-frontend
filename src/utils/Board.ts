@@ -3,7 +3,7 @@ import AppState from 'drawify/lib/State/AppState';
 import ServiceBuilder from 'drawify';
 import Timer from 'drawify/lib/Timer/Timer';
 import { PlayBaseController } from 'drawify/lib/Controllers/PlayBaseController';
-import { StrokeAttributes } from 'drawify/lib/Interfaces/ActionInterfaces';
+import { StrokeAttributes, IAction } from 'drawify/lib/Interfaces/ActionInterfaces';
 import { AppStates } from 'drawify/lib/Interfaces/AppInterfaces';
 
 export default class Board {
@@ -63,6 +63,11 @@ export default class Board {
       this.panMode = 'off';
       this.controller!.stateToggle(false);
     }
+  }
+
+  public setRecording(recording: IAction[]) {
+    const player = this.container!.getContainer().resolve<PlayBaseController>(PlayBaseController);
+    player.setEventLog(recording);
   }
 
   public clear(): void {

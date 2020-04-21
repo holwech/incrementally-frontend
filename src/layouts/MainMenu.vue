@@ -25,10 +25,10 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Incremental
+            education redefined.
           </h1>
           <p class="text-center">
-            Go back later, fix mistakes, and improve your content incrementally
+            The new way to create educational content
           </p>
         </b-col>
       </b-row>
@@ -88,7 +88,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Always sharp
+            always sharp
           </h1>
           <p class="text-center">
             Create content with infinite resolution using Scalable Vector Graphics
@@ -101,7 +101,7 @@
           class="splash-text"
         >
           <h1 class="text-center">
-            Interactive
+            interactive
           </h1>
           <p class="text-center">
             Let your students learn by doing
@@ -117,7 +117,7 @@
             incrementally
           </h1>
           <p class="text-center">
-            The new way to create educational content
+            Go back later, fix mistakes, and improve your content incrementally
           </p>
         </b-col>
       </b-row>

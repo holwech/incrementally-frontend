@@ -14,22 +14,27 @@
     <b-container id="main-container">
       <b-row align-h="center" style="margin-bottom: 50px;">
         <b-col cols="6">
-          <b-form-input v-model="searchInput" size="lg" placeholder="Search for anything"></b-form-input>
+          <b-form-input v-model="searchInput" size="lg" placeholder="Search does not work yet"></b-form-input>
         </b-col>
       </b-row>
-      <b-row align-h="center">
-        <b-col cols="8" style="text-align:center;">
+      <b-row align-h="center" class="result-explore-main">
+        <b-col cols="8">
           <b-spinner label="Loading..." size="lg" v-if="searching" style="width: 3rem; height: 3rem;"></b-spinner>
           <b-card
             v-else
             v-for="entry in entries" :key="entry.id"
             :title="entry.title"
+            class="result-explore"
           >
             <b-card-text>
               {{ entry.title }}
             </b-card-text>
 
-            <b-button href="#" variant="primary">Open</b-button>
+            <router-link
+              :to="{ name: 'EditorWithLoad', params: { id: entry.id } }"
+            >
+              <b-btn variant="outline-dark">Open</b-btn>
+            </router-link>
           </b-card>
         </b-col>
       </b-row>
@@ -84,3 +89,17 @@ export default class Explore extends Vue {
   }
 }
 </script>
+
+
+<style lang="scss">
+.result-explore {
+  margin-bottom: 20px;
+}
+
+.result-explore-main {
+  text-align: center;
+  .result-explore {
+    text-align: left;
+  }
+}
+</style>

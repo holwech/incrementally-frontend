@@ -1,6 +1,12 @@
 <template>
   <div id="main-wrapper">
     <Toolbar>
+      <b-spinner 
+        label="Loading..."
+        variant='light'
+        v-if="RecordStore.loadingRecording && RecordStore.loadingMetadata"
+        style="margin:4px;"
+      ></b-spinner>
       <b-button
         v-if="board.isPlaying"
         variant="dark"
@@ -103,6 +109,8 @@ import Board from '@/utils/Board';
   }
 })
 export default class Editor extends Vue {
+  @Prop(String) readonly id?: string;
+  private RecordStore = RecordStore;
   private board = new Board();
   private smoothnessOptions = [
     { value: 1, text: 'None' },
@@ -144,8 +152,17 @@ export default class Editor extends Vue {
     this.board.setStrokeAttribute(StrokeAttributes.WIDTH, newVal);
   }
 
-  private mounted(): void {
+  private async mounted(): Promise<void> {
     this.board.create('board');
+    if (this.id) {
+      await Promise.all([
+        RecordStore.LoadMetadata({ id: this.id, auth: this.$auth }),
+        RecordStore.LoadRecording({ id: this.id, auth: this.$auth })
+      ]);
+      console.log(RecordStore.loadingMetadata);
+      console.log(RecordStore.recording);
+      this.board.setRecording(RecordStore.recording);
+    }
   }
 
   // @Prop(String) readonly id?: string;
