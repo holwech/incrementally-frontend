@@ -1,48 +1,13 @@
 <template>
-  <div>
-    <v-btn
-      color="white"
-      class="ml-1"
-      tile
-      outlined
-      @click="dialog = true"
-    >
-      <span color="black"> Help </span>
-    </v-btn>
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
-      <v-card>
-        <v-card-title
-          class="headline"
-          primary-title
-        >
-          Help
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <slot />
-            </v-layout>
-          </v-container>
-        </v-card-text>
-
-        <v-divider />
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+  <b-modal :id="modalId" title="Help" ok-only>
+    <b-list-group>
+      <b-list-group-item>Click play/space to start recording</b-list-group-item>
+      <b-list-group-item>Click reverse and then play to view recording</b-list-group-item>
+      <b-list-group-item>Hold CTRL and click left mouse button to pan</b-list-group-item>
+      <b-list-group-item>Scroll to zoom</b-list-group-item>
+      <b-list-group-item>Click on drawing to remove it</b-list-group-item>
+    </b-list-group>
+  </b-modal>
 </template>
 
 <script lang="ts">
@@ -50,6 +15,8 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 @Component
 export default class HelpDialog extends Vue {
-  private dialog = false;
+  @Prop(String) readonly modalId?: string;
+
+
 }
 </script>

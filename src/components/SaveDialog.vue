@@ -1,77 +1,22 @@
 <template>
-  <div>
-    <v-btn
-      color="white"
-      class="ml-1"
-      tile
-      outlined
-      @click="dialog = true"
-    >
-      <span> Save </span>
-    </v-btn>
-    <v-dialog
-      v-model="dialog"
-      width="500"
-    >
-      <v-card>
-        <v-card-title
-          class="headline"
-          primary-title
-        >
-          Save
-        </v-card-title>
-        <v-card-text>
-          <v-container grid-list-md>
-            <v-layout wrap>
-              <v-col md12>
-                <v-row>
-                  <v-text-field
-                    v-model="form.title.value"
-                    label="Title"
-                    :rules="form.title.rules"
-                  />
-                </v-row>
-                <v-row>
-                  <v-textarea
-                    v-model="form.description.value"
-                    label="Description"
-                    :rules="form.description.rules"
-                  />
-                </v-row>
-              </v-col>
-            </v-layout>
-          </v-container>
-        </v-card-text>
+  <b-modal :id="modalId" v-model="showModal" title="Save" hide-footer>
+    <b-form-group label="Title" label-for="save-title">
+      <b-form-input id="save-title" v-model="form.title.value"></b-form-input>
+    </b-form-group>
 
-        <v-divider />
-
-        <v-card-actions>
-          <v-spacer />
-          <v-progress-circular
-            v-if="RecordStore.loading"
-            indeterminate
-            color="primary"
-          />
-          <v-btn
-            v-else
-            color="primary"
-            text
-            :disabled="disableSave"
-            @click="save"
-          >
-            Save
-          </v-btn>
-          <v-btn
-            color="primary"
-            text
-            @click="close"
-          >
-            Close
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </div>
+    <b-form-group label="Description" label-for="save-description">
+      <b-form-textarea
+        id="save-description"
+        v-model="form.description.value"
+        placeholder="Enter a description..."
+        rows="3"
+        max-rows="6"
+      ></b-form-textarea>
+    </b-form-group>
+    <b-button :variant="disableSave ? 'dark' : 'primary'" class="float-right" @click="save" :disabled="disableSave" style="margin-left:5px;">Save</b-button>
+    <b-button class="float-right" @click="showModal = false">Cancel</b-button>
+    <b-spinner class="float-right" variant="primary" v-if="RecordStore.loading" style="margin: 5px;"></b-spinner>
+  </b-modal>
 </template>
 
 <script lang="ts">
@@ -92,7 +37,8 @@ interface SaveDialogFormTemplate {
 
 @Component
 export default class SaveDialog extends Vue {
-  @Prop(Boolean) private readonly dialog = false;
+  @Prop(String) readonly modalId?: string;
+  private showModal = false;
 
   private RecordStore = RecordStore;
   private disableSave = true;
@@ -128,7 +74,7 @@ export default class SaveDialog extends Vue {
   @Watch('RecordStore.loading')
   private closeOnLoadingDone() {
     if (!this.RecordStore.loading) {
-      this.close();
+      this.showModal = false;
     }
   }
 

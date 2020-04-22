@@ -45,6 +45,10 @@
             board.timer.timeMonitor.lengthSeconds
         }}
       </b-button>
+      <b-button v-b-modal.modal-save-dialog variant="light" class="editor-button">Save</b-button>
+      <SaveDialog modalId="modal-save-dialog" />
+      <b-button v-b-modal.modal-help-dialog variant="light" class="editor-button">Help</b-button>
+      <HelpDialog modalId="modal-help-dialog" />
       <b-button variant="light" class="editor-button" v-b-modal.modal-settings>Settings</b-button>
       <b-modal id="modal-settings" title="Settings" ok-only>
         <b-form-group
@@ -66,7 +70,14 @@
           description="Set the stroke width"
           label-for="input-stroke-width"
         >
-          <b-form-select id="input-stroke-width" v-model="strokeWidthSelected" :options="strokeWidthOptions"></b-form-select>
+          <b-input-group append="Fill" class="mb-2">
+            <b-form-select id="input-stroke-width" v-model="strokeWidthSelected" :options="strokeWidthOptions"></b-form-select>
+            <b-input-group-append is-text>
+              <b-form-checkbox switch v-model="fill" class="mr-n2">
+                <span class="sr-only">Switch for previous text input</span>
+              </b-form-checkbox>
+            </b-input-group-append>
+          </b-input-group>
         </b-form-group>
       </b-modal>
       <LoginButton />
@@ -78,7 +89,6 @@
 <script lang="ts">
 import 'reflect-metadata';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import SettingsDialog from '@/components/SettingsDialog.vue';
 import HelpDialog from '@/components/HelpDialog.vue';
 import SaveDialog from '@/components/SaveDialog.vue';
 import Toolbar from '@/layouts/Toolbar.vue';
@@ -101,7 +111,6 @@ import Board from '@/utils/Board';
 
 @Component({
   components: {
-    SettingsDialog,
     HelpDialog,
     Toolbar,
     LoginButton,
@@ -135,6 +144,7 @@ export default class Editor extends Vue {
     { value: 8, text: '8px' }
   ];
   private strokeWidthSelected = this.strokeWidthOptions[1].value;
+  private fill = false;
 
   @Watch('smoothnessSelected')
   private setSmoothness(newVal: any, oldVal: any) {
@@ -150,6 +160,11 @@ export default class Editor extends Vue {
   @Watch('strokeWidthSelected')
   private setStrokeWidth(newVal: any, oldVal: any) {
     this.board.setStrokeAttribute(StrokeAttributes.WIDTH, newVal);
+  }
+
+  @Watch('fill')
+  private setFill(newVal: any, oldVal: any) {
+    this.board.setStrokeAttribute(StrokeAttributes.FILL, newVal)
   }
 
   private async mounted(): Promise<void> {
