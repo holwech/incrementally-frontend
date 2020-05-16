@@ -27,7 +27,9 @@
             class="result-explore"
           >
             <b-card-text>
-              {{ entry.title }}
+              {{ entry.description }}
+              {{ entry.createdBy }}
+              {{ idToken }}
             </b-card-text>
 
             <router-link
@@ -35,6 +37,7 @@
             >
               <b-btn variant="outline-dark">Open</b-btn>
             </router-link>
+            <b-btn variant="outline-dark" v-if="canDelete(entry.createdBy)" @click="deleteEntry(entry.createdBy)" style="margin-left: 5px">Delete</b-btn>
           </b-card>
         </b-col>
       </b-row>
@@ -67,6 +70,28 @@ export default class Explore extends Vue {
   private entries = Array<RecordingMetadata>();
   private searching = false;
   private searchInput = '';
+
+  private canDelete(id: string) {
+    return this.$auth.idToken && (this.$auth.idToken.uniqueId === id);
+  }
+
+  private deleteEntry(id: string) {
+    console.log('hi');
+    this.$auth
+      .query(
+        process.env.VUE_APP_URL + '/api/recording/' + id,
+        {
+          scopes: [
+            process.env.VUE_APP_SCOPE_WRITE,
+            process.env.VUE_APP_SCOPE_READ
+          ]
+        },
+        'DELETE',
+        null,
+        true
+      )
+      .then(res => console.log(res.json()));
+  }
 
   private mounted(): void {
     this.searching = true;

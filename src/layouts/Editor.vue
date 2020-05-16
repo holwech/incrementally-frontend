@@ -80,6 +80,7 @@
           </b-input-group>
         </b-form-group>
       </b-modal>
+        <router-link :to="{ name: 'Explorer' }" tag="button" class="btn btn-outline-light" style="margin-left:5px;">Explore</router-link>
       <LoginButton />
     </Toolbar>
     <div id="board" />

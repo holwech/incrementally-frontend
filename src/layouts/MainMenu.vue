@@ -163,3 +163,9 @@ export default class MainMenu extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+.board-button {
+  margin-left: 5px;
+}
+</style>
