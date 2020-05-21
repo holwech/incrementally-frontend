@@ -29,7 +29,6 @@
             <b-card-text>
               {{ entry.description }}
               {{ entry.createdBy }}
-              {{ idToken }}
             </b-card-text>
 
             <router-link
@@ -37,10 +36,19 @@
             >
               <b-btn variant="outline-dark">Open</b-btn>
             </router-link>
-            <b-btn variant="outline-dark" v-if="canDelete(entry.createdBy)" @click="deleteEntry(entry.createdBy)" style="margin-left: 5px">Delete</b-btn>
+            <b-button v-b-modal.delete-entry
+              variant="outline-dark" v-if="canDelete(entry.createdBy)" @click="selectedDelete = entry.id" style="margin-left: 5px"
+            >Delete</b-button>
+
           </b-card>
         </b-col>
       </b-row>
+      <b-modal id="delete-entry" v-model="showModal" title="Delete item" hide-footer>
+        <p>Are you sure?</p>
+        <b-button variant="danger" class="float-right" @click="deleteEntry" style="margin-left:5px;">Delete</b-button>
+        <b-button class="float-right" @click="showModal = false">Cancel</b-button>
+        <b-spinner class="float-right" variant="primary" v-if="deleting" style="margin: 5px;"></b-spinner>
+      </b-modal>
     </b-container>
   </div>
 </template>
@@ -70,16 +78,18 @@ export default class Explore extends Vue {
   private entries = Array<RecordingMetadata>();
   private searching = false;
   private searchInput = '';
+  private deleting = false;
+  private selectedDelete?: string;
 
   private canDelete(id: string) {
     return this.$auth.idToken && (this.$auth.idToken.uniqueId === id);
   }
 
-  private deleteEntry(id: string) {
-    console.log('hi');
-    this.$auth
+  private async deleteEntry() {
+    this.deleting = true;
+    const res = await this.$auth
       .query(
-        process.env.VUE_APP_URL + '/api/recording/' + id,
+        process.env.VUE_APP_URL + '/api/recording/' + this.selectedDelete,
         {
           scopes: [
             process.env.VUE_APP_SCOPE_WRITE,
@@ -89,8 +99,9 @@ export default class Explore extends Vue {
         'DELETE',
         null,
         true
-      )
-      .then(res => console.log(res.json()));
+      );
+    console.log(res);
+    this.deleting = false;
   }
 
   private mounted(): void {
