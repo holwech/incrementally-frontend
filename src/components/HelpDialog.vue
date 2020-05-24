@@ -1,5 +1,9 @@
 <template>
-  <b-modal :id="modalId" title="Help" ok-only>
+  <b-modal
+    :id="modalId"
+    title="Help"
+    ok-only
+  >
     <b-list-group>
       <b-list-group-item>Click play/space to start recording</b-list-group-item>
       <b-list-group-item>Click reverse and then play to view recording</b-list-group-item>
