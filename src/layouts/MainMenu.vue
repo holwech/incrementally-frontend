@@ -10,7 +10,8 @@
         </b-btn>
       </router-link>
       <router-link :to="{ name: 'Editor' }">
-        <b-btn variant="outline-light"
+        <b-btn
+          variant="outline-light"
           style="margin-left:5px;"
         >
           Open editor

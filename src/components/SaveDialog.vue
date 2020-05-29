@@ -1,21 +1,53 @@
 <template>
-  <b-modal :id="modalId" v-model="showModal" title="Save" hide-footer>
-    <b-form-group label="Title" label-for="save-title">
-      <b-form-input id="save-title" v-model="form.title.value"></b-form-input>
+  <b-modal
+    :id="modalId"
+    v-model="showModal"
+    title="Save"
+    hide-footer
+  >
+    <b-form-group
+      label="Title"
+      label-for="save-title"
+    >
+      <b-form-input
+        id="save-title"
+        v-model="form.title.value"
+      />
     </b-form-group>
 
-    <b-form-group label="Description" label-for="save-description">
+    <b-form-group
+      label="Description"
+      label-for="save-description"
+    >
       <b-form-textarea
         id="save-description"
         v-model="form.description.value"
         placeholder="Enter a description..."
         rows="3"
         max-rows="6"
-      ></b-form-textarea>
+      />
     </b-form-group>
-    <b-button :variant="disableSave ? 'dark' : 'primary'" class="float-right" @click="save" :disabled="disableSave" style="margin-left:5px;">Save</b-button>
-    <b-button class="float-right" @click="showModal = false">Cancel</b-button>
-    <b-spinner class="float-right" variant="primary" v-if="RecordStore.loading" style="margin: 5px;"></b-spinner>
+    <b-button
+      :variant="disableSave ? 'dark' : 'primary'"
+      class="float-right"
+      :disabled="disableSave"
+      style="margin-left:5px;"
+      @click="save"
+    >
+      Save
+    </b-button>
+    <b-button
+      class="float-right"
+      @click="showModal = false"
+    >
+      Cancel
+    </b-button>
+    <b-spinner
+      v-if="RecordStore.loading"
+      class="float-right"
+      variant="primary"
+      style="margin: 5px;"
+    />
   </b-modal>
 </template>
 

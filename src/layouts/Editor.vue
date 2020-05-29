@@ -1,17 +1,17 @@
 <template>
   <div id="main-wrapper">
     <Toolbar>
-      <b-spinner 
-        label="Loading..."
-        variant='light'
+      <b-spinner
         v-if="RecordStore.loadingRecording && RecordStore.loadingMetadata"
+        label="Loading..."
+        variant="light"
         style="margin:4px;"
-      ></b-spinner>
+      />
       <b-button
         v-if="board.isPlaying"
         variant="dark"
         class="icon-button editor-button"
-        style="color:red;"
+        style="color:green;"
         @click="board.controller.pause()"
       >
         <span class="material-icons">fiber_manual_record</span>
@@ -45,42 +45,90 @@
             board.timer.timeMonitor.lengthSeconds
         }}
       </b-button>
-      <b-button v-b-modal.modal-save-dialog variant="light" class="editor-button">Save</b-button>
-      <SaveDialog modalId="modal-save-dialog" />
-      <b-button v-b-modal.modal-help-dialog variant="light" class="editor-button">Help</b-button>
-      <HelpDialog modalId="modal-help-dialog" />
-      <b-button variant="light" class="editor-button" v-b-modal.modal-settings>Settings</b-button>
-      <b-modal id="modal-settings" title="Settings" ok-only>
+      <b-button
+        v-b-modal.modal-save-dialog
+        variant="light"
+        class="editor-button"
+      >
+        Save
+      </b-button>
+      <SaveDialog modal-id="modal-save-dialog" />
+      <b-button
+        v-b-modal.modal-help-dialog
+        variant="light"
+        class="editor-button"
+      >
+        Help
+      </b-button>
+      <HelpDialog modal-id="modal-help-dialog" />
+      <b-button
+        v-b-modal.modal-settings
+        variant="light"
+        class="editor-button"
+      >
+        Settings
+      </b-button>
+      <b-modal
+        id="modal-settings"
+        title="Settings"
+        ok-only
+      >
         <b-form-group
           label="Smoothness"
           description="Set how smooth the free hand drawing should be"
           label-for="input-smoothness"
         >
-          <b-form-select id="input-smoothness" v-model="smoothnessSelected" :options="smoothnessOptions"></b-form-select>
+          <b-form-select
+            id="input-smoothness"
+            v-model="smoothnessSelected"
+            :options="smoothnessOptions"
+          />
         </b-form-group>
         <b-form-group
           label="Color"
           description="Set the color"
           label-for="input-color"
         >
-          <b-form-select id="input-color" v-model="colorSelected" :options="colorOptions"></b-form-select>
+          <b-form-select
+            id="input-color"
+            v-model="colorSelected"
+            :options="colorOptions"
+          />
         </b-form-group>
         <b-form-group
           label="Strok width"
           description="Set the stroke width"
           label-for="input-stroke-width"
         >
-          <b-input-group append="Fill" class="mb-2">
-            <b-form-select id="input-stroke-width" v-model="strokeWidthSelected" :options="strokeWidthOptions"></b-form-select>
+          <b-input-group
+            append="Fill"
+            class="mb-2"
+          >
+            <b-form-select
+              id="input-stroke-width"
+              v-model="strokeWidthSelected"
+              :options="strokeWidthOptions"
+            />
             <b-input-group-append is-text>
-              <b-form-checkbox switch v-model="fill" class="mr-n2">
+              <b-form-checkbox
+                v-model="fill"
+                switch
+                class="mr-n2"
+              >
                 <span class="sr-only">Switch for previous text input</span>
               </b-form-checkbox>
             </b-input-group-append>
           </b-input-group>
         </b-form-group>
       </b-modal>
-        <router-link :to="{ name: 'Explorer' }" tag="button" class="btn btn-outline-light" style="margin-left:5px;">Explore</router-link>
+      <router-link
+        :to="{ name: 'Explorer' }"
+        tag="button"
+        class="btn btn-outline-light"
+        style="margin-left:5px;"
+      >
+        Explore
+      </router-link>
       <LoginButton />
     </Toolbar>
     <div id="board" />
@@ -127,7 +175,7 @@ export default class Editor extends Vue {
     { value: 2, text: 'Low' },
     { value: 4, text: 'Normal' },
     { value: 6, text: 'High' },
-    { value: 8, text: 'Very high' },
+    { value: 8, text: 'Very high' }
   ];
   private smoothnessSelected = this.smoothnessOptions[2].value;
   private colorOptions = [
@@ -165,7 +213,7 @@ export default class Editor extends Vue {
 
   @Watch('fill')
   private setFill(newVal: any, oldVal: any) {
-    this.board.setStrokeAttribute(StrokeAttributes.FILL, newVal)
+    this.board.setStrokeAttribute(StrokeAttributes.FILL, newVal);
   }
 
   private async mounted(): Promise<void> {
