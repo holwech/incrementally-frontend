@@ -10,8 +10,11 @@ assignees: ''
 #### User story
 As a ..., I want ..., so that ...
 
+#### Description
+A short description with more details.
+
 #### Tasks
-[] - A task to be done
+- [ ] A task to be done
 
 #### Related tasks
 - incrementallygroup/REPO-NAME#ID
