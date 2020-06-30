@@ -2,7 +2,7 @@
 name: User story
 about: Standard template for user stories.
 title: Short description here
-labels: ''
+labels: user story
 assignees: ''
 
 ---
