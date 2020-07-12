@@ -232,14 +232,21 @@ export default class Editor extends Vue {
   }
 
   private async start() {
+    await this.audio.init();
     this.board.controller!.start();
-    this.audio.init();
     this.audio.start();
   }
 
   private async pause() {
     this.board.controller!.pause();
     this.audio.stop();
+    await this.sleep(1000);
+    let audio = new Audio(URL.createObjectURL(this.audio.toBlob()));
+    audio.play();
+  }
+
+  private sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 </script>

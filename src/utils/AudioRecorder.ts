@@ -1,7 +1,7 @@
 export default class AudioRecorder {
     private recordedChunks: Blob[] = [];
     private mediaRecorder?: MediaRecorder;
-    private dataAvailableListenerFn: (e: any) => void;
+    private dataAvailableListenerFn: (e: BlobEvent) => void;
     private options: MediaRecorderOptions = {
         mimeType: 'audio/webm'
     }
@@ -16,19 +16,19 @@ export default class AudioRecorder {
     public async init() {
         let stream = await this.promptMicAccess();
         this.mediaRecorder = new MediaRecorder(stream, this.options)
+        this.mediaRecorder.ondataavailable = this.onDataAvailable.bind(this);
     }
 
     public async start() {
-        if (await this.checkMicAccess() !== 'granted') {
-            return false;
-        }
-        this.mediaRecorder!.addEventListener('dataavailable', this.dataAvailableListenerFn)
+        // Possibly not working in Firefox, skip for now
+        // if (await this.checkMicAccess() !== 'granted') {
+        //    return false;
+        // }
         this.mediaRecorder!.start();
         return true;
     }
 
     public stop() {
-        this.mediaRecorder!.removeEventListener('dataavailable', this.dataAvailableListenerFn);
         this.mediaRecorder!.stop();
     }
 
@@ -37,9 +37,11 @@ export default class AudioRecorder {
     }
 
     public toBlob() {
-        return 
+        console.log(this.recordedChunks);
+        return new Blob(this.recordedChunks, { type: 'audio/webm' });
     }
 
+    // Still in experimental, does not work in Firefox?
     public async checkMicAccess() {
         let result = await this.nav.permissions.query({ name: 'microphone' });
         result.onchange = function() {
