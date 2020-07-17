@@ -99,7 +99,7 @@ class RecordStoreModule extends VuexModule {
         false
       );
     let json = await res.json();
-    this.recording = JSON.parse(json[0].recording);
+    this.recording = JSON.parse(json.recording);
     this.loadingRecording = false;
   }
 }
