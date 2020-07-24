@@ -65,7 +65,7 @@ export default class Board {
     }
   }
 
-  private setRecording(recording: IAction[]) {
+  public setRecording(recording: IAction[]) {
     const player = this.container!.getContainer().resolve<PlayBaseController>(PlayBaseController);
     player.setEventLog(recording);
   }
