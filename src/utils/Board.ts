@@ -51,21 +51,21 @@ export default class Board {
     }
   }
 
-  public panOn(e: KeyboardEvent): void {
+  private panOn(e: KeyboardEvent): void {
     if (e.code === 'ControlLeft') {
       this.panMode = 'on';
       this.controller!.stateToggle(true);
     }
   }
 
-  public panOff(e: KeyboardEvent): void {
+  private panOff(e: KeyboardEvent): void {
     if (e.code === 'ControlLeft') {
       this.panMode = 'off';
       this.controller!.stateToggle(false);
     }
   }
 
-  public setRecording(recording: IAction[]) {
+  private setRecording(recording: IAction[]) {
     const player = this.container!.getContainer().resolve<PlayBaseController>(PlayBaseController);
     player.setEventLog(recording);
   }
