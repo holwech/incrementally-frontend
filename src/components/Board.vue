@@ -44,8 +44,14 @@ export default class Board extends Vue {
 
   private mounted(): void {
     this.container = new ServiceBuilder();
-    this.controller = this.container.build(document.getElementById('svg')!, this.state, this.timer);
-    let player = this.container.getContainer().resolve<PlayBaseController>(PlayBaseController);
+    this.controller = this.container.build(
+      document.getElementById('svg')!,
+      this.state,
+      this.timer
+    );
+    let player = this.container
+      .getContainer()
+      .resolve<PlayBaseController>(PlayBaseController);
     this.controller.init([
       { targetAttr: StrokeAttributes.COLOR, value: 'black' },
       { targetAttr: StrokeAttributes.WIDTH, value: 2 },

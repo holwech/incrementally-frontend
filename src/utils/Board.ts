@@ -32,17 +32,17 @@ export default class Board {
       },
       { targetAttr: StrokeAttributes.FILL, value: false }
     ]);
-    window.addEventListener('keydown', this.panOn);
-    window.addEventListener('keyup', this.panOff);
-    window.addEventListener('keydown', this.playToggle);
+    window.addEventListener('keydown', this.panOn.bind(this));
+    window.addEventListener('keyup', this.panOff.bind(this));
+    window.addEventListener('keydown', this.playToggle.bind(this));
   }
 
   public setStrokeAttribute(targetAttr: StrokeAttributes, value: string | number | boolean) {
     this.controller!.setStrokeProperties({ targetAttr: targetAttr, value });
   }
 
-  private playToggle(e: KeyboardEvent): void {
-    if (e.keyCode === 32 || e.key === ' ') {
+  private playToggle = (e: KeyboardEvent): void => {
+    if (e.code === 'Space') {
       if (this.isPlaying) {
         this.controller!.pause();
       } else {
@@ -51,15 +51,15 @@ export default class Board {
     }
   }
 
-  private panOn(e: KeyboardEvent): void {
-    if (e.keyCode === 17) {
+  public panOn(e: KeyboardEvent): void {
+    if (e.code === 'ControlLeft') {
       this.panMode = 'on';
       this.controller!.stateToggle(true);
     }
   }
 
-  private panOff(e: KeyboardEvent): void {
-    if (e.keyCode === 17) {
+  public panOff(e: KeyboardEvent): void {
+    if (e.code === 'ControlLeft') {
       this.panMode = 'off';
       this.controller!.stateToggle(false);
     }
