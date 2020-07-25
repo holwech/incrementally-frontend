@@ -31,48 +31,23 @@
       >
         <span class="material-icons">replay</span>
       </b-button>
-      <b-button
-        variant="light"
-        class="icon-button editor-button"
-      >
+      <b-button variant="light" class="icon-button editor-button">
         {{
-          board.timer.timeMonitor.minutes +
-            ':' +
-            board.timer.timeMonitor.seconds +
-            ' / ' +
-            board.timer.timeMonitor.lengthMinutes +
-            ':' +
-            board.timer.timeMonitor.lengthSeconds
+        board.timer.timeMonitor.minutes +
+        ':' +
+        board.timer.timeMonitor.seconds +
+        ' / ' +
+        board.timer.timeMonitor.lengthMinutes +
+        ':' +
+        board.timer.timeMonitor.lengthSeconds
         }}
       </b-button>
-      <b-button
-        v-b-modal.modal-save-dialog
-        variant="light"
-        class="editor-button"
-      >
-        Save
-      </b-button>
+      <b-button v-b-modal.modal-save-dialog variant="light" class="editor-button">Save</b-button>
       <SaveDialog modal-id="modal-save-dialog" />
-      <b-button
-        v-b-modal.modal-help-dialog
-        variant="light"
-        class="editor-button"
-      >
-        Help
-      </b-button>
+      <b-button v-b-modal.modal-help-dialog variant="light" class="editor-button">Help</b-button>
       <HelpDialog modal-id="modal-help-dialog" />
-      <b-button
-        v-b-modal.modal-settings
-        variant="light"
-        class="editor-button"
-      >
-        Settings
-      </b-button>
-      <b-modal
-        id="modal-settings"
-        title="Settings"
-        ok-only
-      >
+      <b-button v-b-modal.modal-settings variant="light" class="editor-button">Settings</b-button>
+      <b-modal id="modal-settings" title="Settings" ok-only>
         <b-form-group
           label="Smoothness"
           description="Set how smooth the free hand drawing should be"
@@ -84,37 +59,22 @@
             :options="smoothnessOptions"
           />
         </b-form-group>
-        <b-form-group
-          label="Color"
-          description="Set the color"
-          label-for="input-color"
-        >
-          <b-form-select
-            id="input-color"
-            v-model="colorSelected"
-            :options="colorOptions"
-          />
+        <b-form-group label="Color" description="Set the color" label-for="input-color">
+          <b-form-select id="input-color" v-model="colorSelected" :options="colorOptions" />
         </b-form-group>
         <b-form-group
           label="Strok width"
           description="Set the stroke width"
           label-for="input-stroke-width"
         >
-          <b-input-group
-            append="Fill"
-            class="mb-2"
-          >
+          <b-input-group append="Fill" class="mb-2">
             <b-form-select
               id="input-stroke-width"
               v-model="strokeWidthSelected"
               :options="strokeWidthOptions"
             />
             <b-input-group-append is-text>
-              <b-form-checkbox
-                v-model="fill"
-                switch
-                class="mr-n2"
-              >
+              <b-form-checkbox v-model="fill" switch class="mr-n2">
                 <span class="sr-only">Switch for previous text input</span>
               </b-form-checkbox>
             </b-input-group-append>
@@ -126,9 +86,7 @@
         tag="button"
         class="btn btn-outline-light"
         style="margin-left:5px;"
-      >
-        Explore
-      </router-link>
+      >Explore</router-link>
       <LoginButton />
     </Toolbar>
     <div id="board" />
