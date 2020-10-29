@@ -1,7 +1,6 @@
 export default class AudioRecorder {
     private recordedChunks: Blob[] = [];
     private mediaRecorder?: MediaRecorder;
-    private dataAvailableListenerFn: (e: BlobEvent) => void;
     private options: MediaRecorderOptions = {
         mimeType: 'audio/webm'
     }
@@ -10,12 +9,11 @@ export default class AudioRecorder {
     constructor(navigator: Navigator, options?: MediaRecorderOptions) {
         this.nav = navigator;
         if (options) this.options = this.options;
-        this.dataAvailableListenerFn = this.onDataAvailable;
     }
 
     public async init() {
         let stream = await this.promptMicAccess();
-        this.mediaRecorder = new MediaRecorder(stream, this.options)
+        this.mediaRecorder = new MediaRecorder(stream, this.options);
         this.mediaRecorder.ondataavailable = this.onDataAvailable.bind(this);
     }
 
@@ -38,6 +36,10 @@ export default class AudioRecorder {
 
     public toBlob() {
         console.log(this.recordedChunks);
+        let reader = new FileReader();
+        reader.onload = (ev) {
+            ev.target?.result
+        }
         return new Blob(this.recordedChunks, { type: 'audio/webm' });
     }
 
@@ -57,5 +59,39 @@ export default class AudioRecorder {
         if (e.data.size > 0) {
             this.recordedChunks.push(e.data);
         }
+    }
+
+    private async concatAudio(blob: Blob) {
+        var blob="YOUR AUDIO BLOB";
+        var f = new FileReader();
+        f.onload = this.processBuffer;
+        f.readAsArrayBuffer(blob);
+    }
+
+    private processBuffer(e) {
+        let audioContext = new AudioContext();
+        audioContext.decodeAudioData(e.target.result, function (buffer) {
+            arrayBuffer.push(buffer);
+            if (arrayBuffer.length > 1) {
+                resultantbuffer = appendBuffer(arrayBuffer[0], arrayBuffer[1]);
+                arrayBuffer = [];
+                arrayBuffer.push(resultantbuffer);
+            }
+            else {
+                resultantbuffer = buffer;
+            }
+    }
+
+    function appendBuffer(buffer1, buffer2) {
+        ///Using AudioBuffer
+        var numberOfChannels = Math.min(buffer1.numberOfChannels, buffer2.numberOfChannels);
+        var tmp = recordingAudioContext.createBuffer(numberOfChannels, (buffer1.length + buffer2.length), buffer1.sampleRate);
+        for (var i = 0; i < numberOfChannels; i++) {
+            var channel = tmp.getChannelData(i);
+            channel.set(buffer1.getChannelData(i), 0);
+            channel.set(buffer2.getChannelData(i), buffer1.length);
+        }
+        return tmp;
+
     }
 }

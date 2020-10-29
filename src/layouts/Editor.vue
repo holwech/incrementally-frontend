@@ -27,7 +27,7 @@
       <b-button
         variant="light"
         class="icon-button editor-button"
-        @click="board.controller.restart()"
+        @click="restart"
       >
         <span class="material-icons">replay</span>
       </b-button>
@@ -157,7 +157,7 @@ import RecordingMetadata from '../models/RecordingMetadata';
 import IRecordingEntry from '@/models/RecordingEntry';
 import { RecordStore } from '@/store/RecordStore';
 import Board from '@/utils/Board';
-import AudioRecorder from '@/utils/AudioRecorder';
+import AudioHandler from '@/utils/AudioHandler';
 
 @Component({
   components: {
@@ -171,7 +171,7 @@ export default class Editor extends Vue {
   @Prop(String) readonly id?: string;
   private RecordStore = RecordStore;
   private board = new Board();
-  private audio = new AudioRecorder(navigator);
+  private audio = new AudioHandler(navigator)
   private smoothnessOptions = [
     { value: 1, text: 'None' },
     { value: 2, text: 'Low' },
@@ -232,17 +232,18 @@ export default class Editor extends Vue {
   }
 
   private async start() {
-    await this.audio.init();
+    await this.audio.start();
     this.board.controller!.start();
-    this.audio.start();
+  }
+
+  private async restart() {
+    this.board.controller?.restart()
+    this.audio.restart();
   }
 
   private async pause() {
     this.board.controller!.pause();
-    this.audio.stop();
-    await this.sleep(1000);
-    let audio = new Audio(URL.createObjectURL(this.audio.toBlob()));
-    audio.play();
+    this.audio.stop()
   }
 
   private sleep(ms: number) {
