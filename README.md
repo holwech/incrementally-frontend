@@ -1,8 +1,11 @@
 [![Netlify Status](https://api.netlify.com/api/v1/badges/330bbe5a-073e-473c-ae37-5f95684bd9a1/deploy-status)](https://app.netlify.com/sites/priceless-hodgkin-3234a5/deploys)
 
-# draw
+# A brief example
 
-View a running example [here](https://priceless-hodgkin-3234a5.netlify.com/)
+![Usage example of incrementally](public/svg_record.gif?raw=true "A brief example of incrementally in use")
+Svg offers an interesting set of capabilities compared to other file types — recording of an svg even more so.
+
+This recording functionality comes from the [drawify](https://github.com/holwech/drawify) repository.
 
 ### Developing
 
